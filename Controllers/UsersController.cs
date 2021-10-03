@@ -25,14 +25,18 @@ namespace GameHeavenAPI.Controllers
         }
 
 
+
         [HttpGet]
         public IEnumerable<GetUserDto> GetUsers()
         {
             return repository.GetUsers();
         }
 
-        
-
+        [HttpGet("{id}")]
+        public async Task<GetUserDto> GetUserAsync(Guid id)
+        {
+            return await repository.GetUser(id);
+        }
         /// <summary>
         /// Method : POST <br/>
         /// Path : users/new <br />

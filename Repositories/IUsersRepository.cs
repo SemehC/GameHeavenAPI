@@ -10,7 +10,7 @@ namespace GameHeavenAPI.Repositories
 {
     public interface IUsersRepository
     {
-        
+        Task<GetUserDto> GetUser(Guid id);
         IEnumerable<GetUserDto> GetUsers();
          Task<ServerResponse<IEnumerable<IdentityError>>> CreateUser(ApplicationUser user, string password);
        
