@@ -29,13 +29,32 @@ namespace GameHeavenAPI.Repositories
         }
 
        
-       
+       public async Task<GetUserDto> GetUser(Guid id)
+        {
+            var res = await _userManager.FindByIdAsync(id.ToString());
+            if (res == null)
+            {
+                return null;
+            }
+
+            return new GetUserDto {
+                Id = res.Id,
+                Birthday = res.Birthday,
+                Email = res.Email,
+                FirstName = res.FirstName,
+                IsActive = res.EmailConfirmed,
+                JoinDate = res.JoinDate,
+                LastName = res.LastName,
+                UserName = res.UserName,
+            }; 
+        }
 
         public IEnumerable<GetUserDto> GetUsers()
         {
             var result = AppDbContext.Users.AsParallel();
             return result.ToList().Select(x => new GetUserDto
             {
+                Id = x.Id,
                 Birthday = x.Birthday,
                 Email = x.Email,
                 FirstName = x.FirstName,
