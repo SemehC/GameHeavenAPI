@@ -5,8 +5,13 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI
 {
-    public class Helper
+    public static class Helper
     {
-        
+        public static List<string> roles = new()
+        {
+            "Admin",
+            "User",
+            "Publisher"
+        };
     }
 }
