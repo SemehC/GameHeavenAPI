@@ -29,6 +29,7 @@ namespace GameHeavenAPI.Controllers
         [HttpGet]
         public IEnumerable<GetUserDto> GetUsers()
         {
+            
             return repository.GetUsers();
         }
 
@@ -48,6 +49,7 @@ namespace GameHeavenAPI.Controllers
         [HttpPost("new")]
         public async Task<ActionResult<ServerResponse<IEnumerable<IdentityError>>>> CreateUserAsync(CreateUserDto userDto)
         {
+
             ApplicationUser user = new()
             {
 

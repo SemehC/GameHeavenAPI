@@ -67,7 +67,19 @@ namespace GameHeavenAPI.Repositories
 
         public async Task<ServerResponse<IEnumerable<IdentityError>>> CreateUser(ApplicationUser user, string password)
         {
+            if (!_roleManager.RoleExistsAsync(Helper.roles[0]).GetAwaiter().GetResult())
+            {
+                Helper.roles.ForEach(s =>
+                {
+                    _roleManager.CreateAsync(new IdentityRole(s));
+                });
+                
+            }
             var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, Helper.roles[0]);
+            }
             var resp = new ServerResponse<IEnumerable<IdentityError>>();
             resp.Success = result.Succeeded;
             resp.Data = result.Errors;
