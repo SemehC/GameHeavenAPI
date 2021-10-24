@@ -31,7 +31,7 @@ namespace GameHeavenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddScoped<IDeveloperRepository, DeveloperRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IPublishersRepository, PublishersRepository>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

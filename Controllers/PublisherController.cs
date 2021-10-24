@@ -1,6 +1,8 @@
 ﻿using GameHeavenAPI.Dtos.PublisherDtos;
+using GameHeavenAPI.Entities;
 using GameHeavenAPI.Repositories;
 using GameHeavenAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -60,6 +62,28 @@ namespace GameHeavenAPI.Controllers
             }
             return await repository.DeletePublisher(PublisherId);
         }
+        [HttpPut("{id}")]
+        public  async Task<ActionResult<Publisher>> updatePublisher( Guid PublisherId , Publisher publisher)
+        {
+            try
+            {
+                if (PublisherId != publisher.PublisherId)
+                {
+                    return BadRequest("Publisher ID mismatch");
+                }
+                var publisherToUpdate = await repository.getPublisher(PublisherId);
+                if(publisherToUpdate == null)
+                {
+                    return NotFound($"Publisher with ID : {PublisherId} not Found");
 
+                }
+                return await repository.updatePublisher(publisher);
+
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating Data");
+            }
+        }
     }
 }

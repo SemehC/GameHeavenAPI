@@ -72,6 +72,22 @@ namespace GameHeavenAPI.Repositories
 
             return null;
         }
+        
 
+        public async Task<ActionResult<Publisher>> updatePublisher(Publisher pub)
+        {
+            var res = await AppDbContext.publisher.FirstOrDefaultAsync(p => p.PublisherId == pub.PublisherId);
+            if (res != null)
+            {
+                res.PublisherPassword = pub.PublisherPassword;
+                res.PublisherName = pub.PublisherName;
+                res.PublisherEmail = pub.PublisherEmail;
+                res.PublisherDescription = pub.PublisherDescription;
+                await AppDbContext.SaveChangesAsync();
+                return res;
+
+            }
+            return null;
+        }
     }
 }

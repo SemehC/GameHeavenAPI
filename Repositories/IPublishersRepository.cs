@@ -16,6 +16,6 @@ namespace GameHeavenAPI.Repositories
         IEnumerable<GetPublisherDto> getPublishers();
         Task<GetPublisherDto> getPublisher(Guid PublisherId);
         Task<ActionResult<GetPublisherDto>> DeletePublisher(Guid PublisherId);
-
+        Task<ActionResult<Publisher>> updatePublisher(Publisher publisher);
     }
 }

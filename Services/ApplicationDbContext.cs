@@ -11,6 +11,7 @@ namespace GameHeavenAPI.Services
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
        public DbSet<Publisher> publisher { get; set; }
+       public DbSet<Developer> developers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
