@@ -96,6 +96,39 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("GameHeavenAPI.Entities.Publisher", b =>
+                {
+                    b.Property<Guid>("PublisherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("JoinDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PublisherDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PublisherId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Publisher");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -227,6 +260,15 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("GameHeavenAPI.Entities.Publisher", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", "User")
+                        .WithOne("Publisher")
+                        .HasForeignKey("GameHeavenAPI.Entities.Publisher", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -276,6 +318,11 @@ namespace GameHeavenAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GameHeavenAPI.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Publisher");
                 });
 #pragma warning restore 612, 618
         }
