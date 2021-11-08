@@ -1,4 +1,5 @@
 ﻿using GameHeavenAPI.Dtos;
+using GameHeavenAPI.Dtos.UserDtos;
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Repositories;
 using GameHeavenAPI.Services;
@@ -33,11 +34,23 @@ namespace GameHeavenAPI.Controllers
             return repository.GetUsers();
         }
 
+
+        /// <summary>
+        /// Method : GET <br/>
+        /// Path : users/id <br/>
+        /// Get user by it's ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
         [HttpGet("{id}")]
         public async Task<GetUserDto> GetUserAsync(Guid id)
         {
             return await repository.GetUser(id);
         }
+
+
+
         /// <summary>
         /// Method : POST <br/>
         /// Path : users/new <br />
@@ -52,7 +65,6 @@ namespace GameHeavenAPI.Controllers
 
             ApplicationUser user = new()
             {
-
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 UserName = userDto.UserName,
@@ -65,8 +77,11 @@ namespace GameHeavenAPI.Controllers
         }
 
 
-
-
-
+        [HttpPost("signin")]
+        public async Task<ActionResult<String>> LoginUser(LoginUserDto loginDetails)
+        {
+            var resp = await repository.LoginUser(loginDetails);
+            return resp;
+        }
     }
 }

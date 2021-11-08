@@ -4,14 +4,16 @@ using GameHeavenAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211009185910_AddedPublisherTable")]
+    partial class AddedPublisherTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,32 +98,6 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("GameHeavenAPI.Entities.Developer", b =>
-                {
-                    b.Property<Guid>("DeveloperId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DeveloperDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeveloperEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeveloperName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeveloperPassword")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("JoinDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("DeveloperId");
-
-                    b.ToTable("developers");
-                });
-
             modelBuilder.Entity("GameHeavenAPI.Entities.Publisher", b =>
                 {
                     b.Property<Guid>("PublisherId")
@@ -152,7 +128,7 @@ namespace GameHeavenAPI.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("publisher");
+                    b.ToTable("Publisher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

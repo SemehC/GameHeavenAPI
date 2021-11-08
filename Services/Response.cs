@@ -10,5 +10,7 @@ namespace GameHeavenAPI.Services
         public bool Success { get; set; }
         public T Data { get; set; }
         public List<string> Message { get; set; } = null;
+
+       
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211003141035_added fields to user table")]
-    partial class addedfieldstousertable
+    [Migration("20211009181215_InitDatabase")]
+    partial class InitDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

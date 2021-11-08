@@ -1,4 +1,5 @@
 ﻿using GameHeavenAPI.Dtos;
+using GameHeavenAPI.Dtos.UserDtos;
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,8 @@ namespace GameHeavenAPI.Repositories
     {
         Task<GetUserDto> GetUser(Guid id);
         IEnumerable<GetUserDto> GetUsers();
-         Task<ServerResponse<IEnumerable<IdentityError>>> CreateUser(ApplicationUser user, string password);
+        Task<string> LoginUser(LoginUserDto loginDetails);
+        Task<ServerResponse<IEnumerable<IdentityError>>> CreateUser(ApplicationUser user, string password);
        
     }
 }
