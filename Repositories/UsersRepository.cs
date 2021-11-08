@@ -1,4 +1,5 @@
 ﻿using GameHeavenAPI.Dtos;
+using GameHeavenAPI.Dtos.UserDtos;
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
 using Microsoft.AspNetCore.Identity;
@@ -85,5 +86,30 @@ namespace GameHeavenAPI.Repositories
             resp.Data = result.Errors;
             return resp;
         }
+
+        public async Task<string> LoginUser(LoginUserDto loginDetails)
+        {
+            var result = await _signInManager.PasswordSignInAsync(loginDetails.email, loginDetails.password, true, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                return "User logged in";
+            }
+            if (result.IsNotAllowed) return "Not allowed";
+            if (result.RequiresTwoFactor)
+            {
+                return "Two factor login required";
+            }
+            if (result.IsLockedOut)
+            {
+                return ("User account locked out");
+            }
+            else
+            {
+                return "Invalid login attempt";
+            }
+        }
+
+       
     }
 }
