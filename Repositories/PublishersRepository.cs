@@ -24,7 +24,7 @@ namespace GameHeavenAPI.Repositories
 
         public IEnumerable<GetPublisherDto> getPublishers()
         {
-            var r = AppDbContext.publisher.AsParallel();
+            var r = AppDbContext.Publisher.AsParallel();
 
             return r.ToList().Select(x => new GetPublisherDto
             {
@@ -37,7 +37,7 @@ namespace GameHeavenAPI.Repositories
 
         public async Task<ServerResponse<IEnumerable<IdentityError>>> createPublisher(Publisher pub)
         {
-            var x = await AppDbContext.publisher.AddAsync(pub);
+            var x = await AppDbContext.Publisher.AddAsync(pub);
             AppDbContext.SaveChanges();
             var resp = new ServerResponse<IEnumerable<IdentityError>>();
 
@@ -48,7 +48,7 @@ namespace GameHeavenAPI.Repositories
         
         public  async Task<GetPublisherDto> getPublisher(Guid PublisherId)
         {
-            var res = await AppDbContext.publisher.Where(x => x.PublisherId == PublisherId).SingleAsync();
+            var res = await AppDbContext.Publisher.Where(x => x.PublisherId == PublisherId).SingleAsync();
             if (res == null)
             {
                 return null;
@@ -63,10 +63,10 @@ namespace GameHeavenAPI.Repositories
         }
         public async Task<ActionResult<GetPublisherDto>> DeletePublisher(Guid PublisherId)
         {
-            var result = await AppDbContext.publisher.FirstOrDefaultAsync(e => e.PublisherId == PublisherId);
+            var result = await AppDbContext.Publisher.FirstOrDefaultAsync(e => e.PublisherId == PublisherId);
             if (result != null)
             {
-                AppDbContext.publisher.Remove(result);
+                AppDbContext.Publisher.Remove(result);
                 await AppDbContext.SaveChangesAsync();
             }
 
@@ -76,7 +76,7 @@ namespace GameHeavenAPI.Repositories
 
         public async Task<ActionResult<Publisher>> updatePublisher(Publisher pub)
         {
-            var res = await AppDbContext.publisher.FirstOrDefaultAsync(p => p.PublisherId == pub.PublisherId);
+            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(p => p.PublisherId == pub.PublisherId);
             if (res != null)
             {
                 res.PublisherPassword = pub.PublisherPassword;
