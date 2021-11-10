@@ -20,7 +20,7 @@ namespace GameHeavenAPI.Repositories
 
         public  IEnumerable<GetDeveloperdto> getDevelopers()
         {
-            var res =  AppDbContext.developers.AsParallel();
+            var res =  AppDbContext.Developers.AsParallel();
 
             return res.ToList().Select(x => new GetDeveloperdto
             {
@@ -31,7 +31,7 @@ namespace GameHeavenAPI.Repositories
         }
         public async Task<ServerResponse<IEnumerable<IdentityError>>> createDeveloper(Developer pub)
         {
-            var x = await AppDbContext.developers.AddAsync(pub);
+            var x = await AppDbContext.Developers.AddAsync(pub);
             AppDbContext.SaveChanges();
             var resp = new ServerResponse<IEnumerable<IdentityError>>();
 

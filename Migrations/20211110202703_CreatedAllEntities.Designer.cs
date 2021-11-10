@@ -4,14 +4,16 @@ using GameHeavenAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211110202703_CreatedAllEntities")]
+    partial class CreatedAllEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace GameHeavenAPI.Migrations
                     b.Property<int?>("GamesCartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MinimumSystemRequirementsId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -178,9 +177,6 @@ namespace GameHeavenAPI.Migrations
 
                     b.Property<Guid?>("PublisherId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("RecommendedSystemRequirementsId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
@@ -194,11 +190,7 @@ namespace GameHeavenAPI.Migrations
 
                     b.HasIndex("GamesCartId");
 
-                    b.HasIndex("MinimumSystemRequirementsId");
-
                     b.HasIndex("PublisherId");
-
-                    b.HasIndex("RecommendedSystemRequirementsId");
 
                     b.ToTable("Games");
                 });
@@ -776,25 +768,13 @@ namespace GameHeavenAPI.Migrations
                         .WithMany("Games")
                         .HasForeignKey("GamesCartId");
 
-                    b.HasOne("GameHeavenAPI.Entities.MinimumSystemRequirements", "MinimumSystemRequirements")
-                        .WithMany()
-                        .HasForeignKey("MinimumSystemRequirementsId");
-
                     b.HasOne("GameHeavenAPI.Entities.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("PublisherId");
 
-                    b.HasOne("GameHeavenAPI.Entities.RecommendedSystemRequirements", "RecommendedSystemRequirements")
-                        .WithMany()
-                        .HasForeignKey("RecommendedSystemRequirementsId");
-
                     b.Navigation("Franchise");
 
-                    b.Navigation("MinimumSystemRequirements");
-
                     b.Navigation("Publisher");
-
-                    b.Navigation("RecommendedSystemRequirements");
                 });
 
             modelBuilder.Entity("GameHeavenAPI.Entities.GameImage", b =>

@@ -14,6 +14,6 @@ namespace GameHeavenAPI.Dtos
         public string Email { get; set; }
         public DateTimeOffset JoinDate { get; init; }
         public DateTime Birthday { get; set; }
-        public Boolean IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }
