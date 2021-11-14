@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Dtos.PublisherDtos
 {
-    public record GetPublisherDto
+    public record PublisherDto
     {
 
         [Required]

@@ -1,4 +1,6 @@
-﻿using GameHeavenAPI.Entities;
+﻿using GameHeavenAPI.Dtos.DeveloperDtos;
+using GameHeavenAPI.Dtos.PublisherDtos;
+using GameHeavenAPI.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -14,8 +16,8 @@ namespace GameHeavenAPI
         public DateTime ReleaseDate { get; set; }
         public string Status { get; set; }
         public bool Approved { get; set; }
-        public IList<Developer> Developers { get; set; }
-        public Publisher Publisher { get; set; }
+        public IList<DeveloperDto> Developers { get; set; }
+        public PublisherDto Publisher { get; set; }
         public IList<GameImage> Images { get; set; }
         public Franchise Franchise { get; set; }
         public RecommendedSystemRequirements RecommendedSystemRequirements { get; set; }

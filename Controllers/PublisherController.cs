@@ -24,22 +24,10 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<GetPublisherDto> GetPublishers()
+        public IEnumerable<PublisherDto> GetPublishers()
         {
-            var publishers = repository.GetPublishers().ToList();
-            var publisherDtos = new List<GetPublisherDto>();
-            for (int i = 0; i < publishers.Count; i++)
-            {
-                publisherDtos.Add(new GetPublisherDto
-                {
-                    PublisherDescription = publishers[i].PublisherDescription,
-                    PublisherEmail = publishers[i].PublisherEmail,
-                    PublisherName = publishers[i].PublisherName
-                });
-            }
-            return publisherDtos;
+            return repository.GetPublishers().Select(publisher=>publisher.AsDto()).ToList();
         }
-
 
         [HttpPost("new")]
         public async Task<ServerResponse<IEnumerable<IdentityError>>> AddPublisher(CreatePublisherDto dto)
@@ -55,17 +43,12 @@ namespace GameHeavenAPI.Controllers
             return r;
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetPublisherDto>> GetPublisher(int id)
+        public async Task<ActionResult<PublisherDto>> GetPublisher(int id)
         {
             var publisher = await repository.GetPublisherAsync(id);
             if (publisher is not null)
             {
-                return new GetPublisherDto
-                {
-                    PublisherDescription = publisher.PublisherDescription,
-                    PublisherEmail = publisher.PublisherEmail,
-                    PublisherName = publisher.PublisherName,
-                };
+                return publisher.AsDto();
             }
             return NotFound();
 
