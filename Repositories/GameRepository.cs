@@ -1,5 +1,6 @@
 ﻿using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,48 +14,65 @@ namespace GameHeavenAPI.Repositories
 
         public GameRepository(ApplicationDbContext appDbContext)
         {
-            this._applicationDbContext = appDbContext;
+            _applicationDbContext = appDbContext;
         }
 
         public async Task<Game> CreateGameAsync(Game game)
         {
-            return (await _applicationDbContext.Games.AddAsync(game)).Entity;
+            var createdGame = (await _applicationDbContext.Games.AddAsync(game)).Entity;
+            await _applicationDbContext.SaveChangesAsync();
+            return createdGame;
         }
 
         public async Task DeleteGameAsync(int id)
         {
-            var game = _applicationDbContext.Games.Where(game => game.Id == id).FirstOrDefault();
-            if(game is not null)
+            var game = await _applicationDbContext.CompleteGames()
+                .FirstOrDefaultAsync(game => game.Id == id);
+            _applicationDbContext.Games.Remove(game);
+            await _applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task<Game> GetGameByIdAsync(int id)
+        {
+            return await _applicationDbContext.CompleteGames()
+                .FirstOrDefaultAsync(game => game.Id == id);
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesByNameAsync(string name)
+        {
+            return await _applicationDbContext.CompleteGames()
+                .Where(game => game.Name.Contains(name))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesAsync()
+        {
+            return await _applicationDbContext.CompleteGames()
+                .ToListAsync();
+        }
+
+        public async Task UpdateGameAsync(Game game)
+        {
+            var gameToBeUpdated = await _applicationDbContext.Games.FirstOrDefaultAsync(gameInDb => gameInDb.Id == game.Id);
+            if (gameToBeUpdated is not null)
             {
-                _applicationDbContext.Remove(game);
+                gameToBeUpdated.Discount = game.Discount;
+                gameToBeUpdated.Description = game.Description;
+                gameToBeUpdated.Approved = game.Approved;
+                gameToBeUpdated.Developers = game.Developers;
+                gameToBeUpdated.Publisher = game.Publisher;
+                gameToBeUpdated.Name = game.Name;
+                gameToBeUpdated.MinimumSystemRequirements = game.MinimumSystemRequirements;
+                gameToBeUpdated.RecommendedSystemRequirements = game.RecommendedSystemRequirements;
+                gameToBeUpdated.ReleaseDate = game.ReleaseDate;
+                gameToBeUpdated.Price = game.Price;
+                gameToBeUpdated.Franchise = game.Franchise;
+                gameToBeUpdated.Images = game.Images;
+                gameToBeUpdated.Status = game.Status;
+                _applicationDbContext.Games.Update(gameToBeUpdated);
                 await _applicationDbContext.SaveChangesAsync();
             }
-            await Task.FromException(new NullReferenceException());
-        }
 
-        public Task DeleteGameById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Game> GetGameByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Game>> GetGamesByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Game>> GetGames()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateGame(Game game)
-        {
-            throw new NotImplementedException();
         }
     }
 }

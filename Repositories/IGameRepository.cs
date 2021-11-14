@@ -9,11 +9,11 @@ namespace GameHeavenAPI.Repositories
 {
     public interface IGameRepository
     {
-        Task<IEnumerable<Game>> GetGames();
+        Task<IEnumerable<Game>> GetGamesAsync();
         Task<Game> GetGameByIdAsync(int id);
-        Task<IEnumerable<Game>> GetGamesByName(string name);
+        Task<IEnumerable<Game>> GetGamesByNameAsync(string name);
         Task<Game> CreateGameAsync(Game game);
         Task DeleteGameAsync(int id);
-        Task UpdateGame(Game game);
+        Task UpdateGameAsync(Game game);
     }
 }

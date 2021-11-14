@@ -22,23 +22,12 @@ namespace GameHeavenAPI.Controllers
             this.repository = repository;
         }
         [HttpGet]
-        public IEnumerable<GetDeveloperDto> GetDevelopers()
+        public IEnumerable<DeveloperDto> GetDevelopers()
         {
-            var developers = repository.GetDevelopers().ToList();
-            var developerDtos = new List<GetDeveloperDto>();
-            for (int i = 0; i < developers.Count; i++)
-            {
-                developerDtos.Add(new GetDeveloperDto
-                {
-                    DeveloperDescription = developers[i].DeveloperDescription,
-                    DeveloperEmail = developers[i].DeveloperEmail,
-                    DeveloperName = developers[i].DeveloperName,
-                });
-            }
-            return developerDtos;
+            return repository.GetDevelopers().Select(developer => developer.AsDto()).ToList();
         }
         [HttpPost("new")]
-        public  async  Task<ServerResponse<IEnumerable<IdentityError>>> AddDeveloper(CreateDeveloperDto dto)
+        public async Task<ServerResponse<IEnumerable<IdentityError>>> AddDeveloper(CreateDeveloperDto dto)
         {
             var res = await repository.CreateDeveloper(new Developer
             {
