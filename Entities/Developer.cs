@@ -7,7 +7,7 @@ namespace GameHeavenAPI.Entities
 {
     public class Developer
     {
-        public Guid DeveloperId { get; init; }
+        public int Id { get; init; }
         public string DeveloperName { get; set; }
         public string DeveloperEmail { get; set; }
         public string   DeveloperDescription { get; set; }

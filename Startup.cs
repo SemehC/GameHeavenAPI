@@ -34,9 +34,10 @@ namespace GameHeavenAPI
             services.AddScoped<IDeveloperRepository, DeveloperRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IPublishersRepository, PublishersRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllers();
+            services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GameHeavenAPI", Version = "v1" });

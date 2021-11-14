@@ -11,8 +11,8 @@ namespace GameHeavenAPI.Repositories
 {
     public interface IDeveloperRepository
     {
-        IEnumerable<GetDeveloperdto> getDevelopers();
-        Task<ServerResponse<IEnumerable<IdentityError>>> createDeveloper(Developer pub);
+        IEnumerable<Developer> GetDevelopers();
+        Task<ServerResponse<IEnumerable<IdentityError>>> CreateDeveloper(Developer pub);
 
     }
 }

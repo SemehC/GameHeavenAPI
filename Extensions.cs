@@ -23,5 +23,26 @@ namespace GameHeavenAPI
                 UserName = user.UserName
             };
         }
+        public static GameDto AsDto(this Game game)
+        {
+            return new GameDto
+            {
+                Id = game.Id,
+                Name = game.Name,
+                Approved = game.Approved,
+                Description = game.Description,
+                Developers = game.Developers,
+                Discount = game.Discount,
+                Franchise = game.Franchise,
+                Images = game.Images,
+                Price = game.Price,
+                Publisher = game.Publisher,
+                MinimumSystemRequirements = game.MinimumSystemRequirements,
+                RecommendedSystemRequirements = game.RecommendedSystemRequirements,
+                ReleaseDate = game.ReleaseDate,
+                Status = game.Status
+            };
+
+        }
     }
 }
