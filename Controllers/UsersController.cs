@@ -30,8 +30,23 @@ namespace GameHeavenAPI.Controllers
         [HttpGet]
         public IEnumerable<GetUserDto> GetUsers()
         {
-            
-            return repository.GetUsers();
+            var appUsers = repository.GetUsers().ToList();
+            var users = new List<GetUserDto>();
+            for (int i = 0; i < appUsers.Count; i++)
+            {
+                users.Add(new GetUserDto
+                {
+                    Id = appUsers[i].Id,
+                    Birthday = appUsers[i].Birthday,
+                    Email = appUsers[i].Email,
+                    FirstName = appUsers[i].FirstName,
+                    IsActive = appUsers[i].EmailConfirmed,
+                    JoinDate = appUsers[i].JoinDate,
+                    LastName = appUsers[i].LastName,
+                    UserName = appUsers[i].UserName,
+                });
+            }
+            return users;
         }
 
 
@@ -44,9 +59,25 @@ namespace GameHeavenAPI.Controllers
         /// <returns></returns>
 
         [HttpGet("{id}")]
-        public async Task<GetUserDto> GetUserAsync(Guid id)
+        public async Task<ActionResult<GetUserDto>> GetUserAsync(int id)
         {
-            return await repository.GetUser(id);
+            var usr = await repository.GetUser(id);
+            if (usr is null)
+            {
+                return NotFound();
+            }
+
+            return new GetUserDto
+            {
+                Id = usr.Id,
+                Birthday = usr.Birthday,
+                Email = usr.Email,
+                FirstName = usr.FirstName,
+                IsActive = usr.EmailConfirmed,
+                JoinDate= usr.JoinDate,
+                LastName = usr.LastName,
+                UserName = usr.UserName,
+            };
         }
 
 

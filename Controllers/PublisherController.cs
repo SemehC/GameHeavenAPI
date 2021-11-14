@@ -16,7 +16,7 @@ namespace GameHeavenAPI.Controllers
     [ApiController]
     public class PublisherController : ControllerBase
     {
-        public IPublishersRepository repository;
+        private readonly IPublishersRepository repository;
 
         public PublisherController(IPublishersRepository repository)
         {
@@ -24,18 +24,28 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<GetPublisherDto> getPublishers()
+        public IEnumerable<GetPublisherDto> GetPublishers()
         {
-            return repository.getPublishers();
+            var publishers = repository.GetPublishers().ToList();
+            var publisherDtos = new List<GetPublisherDto>();
+            for (int i = 0; i < publishers.Count; i++)
+            {
+                publisherDtos.Add(new GetPublisherDto
+                {
+                    PublisherDescription = publishers[i].PublisherDescription,
+                    PublisherEmail = publishers[i].PublisherEmail,
+                    PublisherName = publishers[i].PublisherName
+                });
+            }
+            return publisherDtos;
         }
 
 
         [HttpPost("new")]
-        public async Task<ServerResponse<IEnumerable< IdentityError>>> addPublisher(CreatePublisherDto dto)
+        public async Task<ServerResponse<IEnumerable<IdentityError>>> AddPublisher(CreatePublisherDto dto)
         {
-           var r = await repository.createPublisher(new Entities.Publisher
+            var r = await repository.CreatePublisher(new Publisher
             {
-                PublisherId = Guid.NewGuid(),
                 PublisherDescription = dto.PublisherDescription,
                 PublisherEmail = dto.PublisherEmail,
                 PublisherName = dto.PublisherName,
@@ -45,45 +55,53 @@ namespace GameHeavenAPI.Controllers
             return r;
         }
         [HttpGet("{id}")]
-        public async Task<GetPublisherDto> GetPublisher(Guid PublisherId)
+        public async Task<ActionResult<GetPublisherDto>> GetPublisher(int id)
         {
-
-            return await repository.getPublisher(PublisherId);
+            var publisher = await repository.GetPublisherAsync(id);
+            if (publisher is not null)
+            {
+                return new GetPublisherDto
+                {
+                    PublisherDescription = publisher.PublisherDescription,
+                    PublisherEmail = publisher.PublisherEmail,
+                    PublisherName = publisher.PublisherName,
+                };
+            }
+            return NotFound();
 
 
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult<GetPublisherDto>> DeletePublisher(Guid PublisherId)
+        public async Task<ActionResult> DeletePublisher(int id)
         {
-            var res = await repository.getPublisher(PublisherId);
-            if (res == null)
+            var res = await repository.GetPublisherAsync(id);
+            if (res is null)
             {
-                return null;
+                return NotFound();
             }
-            return await repository.DeletePublisher(PublisherId);
+            await repository.DeletePublisher(id);
+            return NoContent();
         }
         [HttpPut("{id}")]
-        public  async Task<ActionResult<Publisher>> updatePublisher( Guid PublisherId , Publisher publisher)
+        public async Task<ActionResult> UpdatePublisher(int id, UpdatePublisherDto updatePublisherDto)
         {
-            try
+            var publisherToUpdate = await repository.GetPublisherAsync(id);
+            if (publisherToUpdate is null)
             {
-                if (PublisherId != publisher.PublisherId)
-                {
-                    return BadRequest("Publisher ID mismatch");
-                }
-                var publisherToUpdate = await repository.getPublisher(PublisherId);
-                if(publisherToUpdate == null)
-                {
-                    return NotFound($"Publisher with ID : {PublisherId} not Found");
-
-                }
-                return await repository.updatePublisher(publisher);
-
+                return NotFound();
             }
-            catch(Exception)
+            //TODO: Handle password encryption
+            if (ModelState.IsValid)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error Updating Data");
+                publisherToUpdate.PublisherName = updatePublisherDto.PublisherName;
+                publisherToUpdate.PublisherDescription = updatePublisherDto.PublisherDescription;
+                publisherToUpdate.PublisherEmail = updatePublisherDto.PublisherEmail;
+                if(updatePublisherDto.PublisherPassword != "")
+                    publisherToUpdate.PublisherPassword = updatePublisherDto.PublisherPassword;
             }
+            await repository.UpdatePublisher(publisherToUpdate);
+            return NoContent();
+
         }
     }
 }

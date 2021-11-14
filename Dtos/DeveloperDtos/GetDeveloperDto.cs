@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Dtos.DeveloperDtos
 {
-    public class GetDeveloperdto
+    public class GetDeveloperDto
     {
         [Required]
         public string DeveloperName { get; set; }

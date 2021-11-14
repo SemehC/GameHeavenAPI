@@ -1,4 +1,5 @@
 ﻿using GameHeavenAPI.Dtos.DeveloperDtos;
+using GameHeavenAPI.Entities;
 using GameHeavenAPI.Repositories;
 using GameHeavenAPI.Services;
 using Microsoft.AspNetCore.Identity;
@@ -21,16 +22,26 @@ namespace GameHeavenAPI.Controllers
             this.repository = repository;
         }
         [HttpGet]
-        public IEnumerable<GetDeveloperdto> getDevelopers()
+        public IEnumerable<GetDeveloperDto> GetDevelopers()
         {
-            return repository.getDevelopers();
+            var developers = repository.GetDevelopers().ToList();
+            var developerDtos = new List<GetDeveloperDto>();
+            for (int i = 0; i < developers.Count; i++)
+            {
+                developerDtos.Add(new GetDeveloperDto
+                {
+                    DeveloperDescription = developers[i].DeveloperDescription,
+                    DeveloperEmail = developers[i].DeveloperEmail,
+                    DeveloperName = developers[i].DeveloperName,
+                });
+            }
+            return developerDtos;
         }
         [HttpPost("new")]
-        public  async  Task<ServerResponse<IEnumerable<IdentityError>>> addDeveloper(CreateDeveloperDto dto)
+        public  async  Task<ServerResponse<IEnumerable<IdentityError>>> AddDeveloper(CreateDeveloperDto dto)
         {
-            var res = await repository.createDeveloper(new Entities.Developer
+            var res = await repository.CreateDeveloper(new Developer
             {
-                DeveloperId = Guid.NewGuid(),
                 DeveloperDescription = dto.DeveloperDescription,
                 DeveloperEmail = dto.DeveloperEmail,
                 DeveloperName = dto.DeveloperName,

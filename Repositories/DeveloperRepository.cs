@@ -18,24 +18,18 @@ namespace GameHeavenAPI.Repositories
             AppDbContext = appDbContext;
         }
 
-        public  IEnumerable<GetDeveloperdto> getDevelopers()
+        public  IEnumerable<Developer> GetDevelopers()
         {
-            var res =  AppDbContext.Developers.AsParallel();
-
-            return res.ToList().Select(x => new GetDeveloperdto
-            {
-               DeveloperDescription = x.DeveloperDescription,
-               DeveloperEmail = x.DeveloperEmail,
-               DeveloperName = x.DeveloperName
-            });
+            return AppDbContext.Developers.AsParallel();
         }
-        public async Task<ServerResponse<IEnumerable<IdentityError>>> createDeveloper(Developer pub)
+        public async Task<ServerResponse<IEnumerable<IdentityError>>> CreateDeveloper(Developer pub)
         {
             var x = await AppDbContext.Developers.AddAsync(pub);
             AppDbContext.SaveChanges();
             var resp = new ServerResponse<IEnumerable<IdentityError>>();
 
             resp.Success = true;
+            resp.Message = new List<string> { x.Entity.Id.ToString() };
 
             return resp;
         }

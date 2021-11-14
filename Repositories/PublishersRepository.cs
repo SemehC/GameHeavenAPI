@@ -22,61 +22,48 @@ namespace GameHeavenAPI.Repositories
             AppDbContext = appDbContext;
         }
 
-        public IEnumerable<GetPublisherDto> getPublishers()
+        public IEnumerable<Publisher> GetPublishers()
         {
             var r = AppDbContext.Publisher.AsParallel();
 
-            return r.ToList().Select(x => new GetPublisherDto
-            {
-                PublisherDescription = x.PublisherDescription,
-                PublisherEmail = x.PublisherEmail,
-                PublisherName = x.PublisherName,
-
-            });
+            return r.ToList();
         }
 
-        public async Task<ServerResponse<IEnumerable<IdentityError>>> createPublisher(Publisher pub)
+        public async Task<ServerResponse<IEnumerable<IdentityError>>> CreatePublisher(Publisher pub)
         {
             var x = await AppDbContext.Publisher.AddAsync(pub);
             AppDbContext.SaveChanges();
             var resp = new ServerResponse<IEnumerable<IdentityError>>();
 
             resp.Success = true;
+            resp.Message = new List<string> { x.Entity.Id.ToString() };
 
             return resp;
         }
         
-        public  async Task<GetPublisherDto> getPublisher(Guid PublisherId)
+        public  async Task<Publisher> GetPublisherAsync(int PublisherId)
         {
-            var res = await AppDbContext.Publisher.Where(x => x.PublisherId == PublisherId).SingleAsync();
+            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(publisher => publisher.Id == PublisherId);
             if (res == null)
             {
                 return null;
             }
-            return new GetPublisherDto
-            {
-                PublisherDescription = res.PublisherDescription,
-                PublisherEmail = res.PublisherEmail,
-                PublisherName = res.PublisherName,
-
-            };
+            return res;
         }
-        public async Task<ActionResult<GetPublisherDto>> DeletePublisher(Guid PublisherId)
+        public async Task DeletePublisher(int PublisherId)
         {
-            var result = await AppDbContext.Publisher.FirstOrDefaultAsync(e => e.PublisherId == PublisherId);
+            var result = await AppDbContext.Publisher.FirstOrDefaultAsync(e => e.Id == PublisherId);
             if (result != null)
             {
                 AppDbContext.Publisher.Remove(result);
                 await AppDbContext.SaveChangesAsync();
             }
-
-            return null;
         }
         
 
-        public async Task<ActionResult<Publisher>> updatePublisher(Publisher pub)
+        public async Task UpdatePublisher(Publisher pub)
         {
-            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(p => p.PublisherId == pub.PublisherId);
+            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(p => p.Id == pub.Id);
             if (res != null)
             {
                 res.PublisherPassword = pub.PublisherPassword;
@@ -84,10 +71,7 @@ namespace GameHeavenAPI.Repositories
                 res.PublisherEmail = pub.PublisherEmail;
                 res.PublisherDescription = pub.PublisherDescription;
                 await AppDbContext.SaveChangesAsync();
-                return res;
-
             }
-            return null;
         }
     }
 }

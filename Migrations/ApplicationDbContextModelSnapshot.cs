@@ -98,9 +98,10 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("GameHeavenAPI.Entities.Developer", b =>
                 {
-                    b.Property<Guid>("DeveloperId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DeveloperDescription")
                         .HasColumnType("nvarchar(max)");
@@ -120,7 +121,7 @@ namespace GameHeavenAPI.Migrations
                     b.Property<DateTimeOffset>("JoinDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.HasKey("DeveloperId");
+                    b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
@@ -176,8 +177,8 @@ namespace GameHeavenAPI.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("PublisherId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("PublisherId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecommendedSystemRequirementsId")
                         .HasColumnType("int");
@@ -233,8 +234,8 @@ namespace GameHeavenAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -280,8 +281,8 @@ namespace GameHeavenAPI.Migrations
                     b.Property<int?>("PCSpecificationsId")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -374,8 +375,8 @@ namespace GameHeavenAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -386,9 +387,10 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("GameHeavenAPI.Entities.Publisher", b =>
                 {
-                    b.Property<Guid>("PublisherId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTimeOffset>("JoinDate")
                         .HasColumnType("datetimeoffset");
@@ -408,7 +410,7 @@ namespace GameHeavenAPI.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("PublisherId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -440,9 +442,10 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("GameHeavenAPI.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");

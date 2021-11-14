@@ -30,40 +30,19 @@ namespace GameHeavenAPI.Repositories
         }
 
        
-       public async Task<GetUserDto> GetUser(Guid id)
+       public async Task<ApplicationUser> GetUser(int id)
         {
             var res = await _userManager.FindByIdAsync(id.ToString());
             if (res == null)
             {
                 return null;
             }
-
-            return new GetUserDto {
-                Id = res.Id,
-                Birthday = res.Birthday,
-                Email = res.Email,
-                FirstName = res.FirstName,
-                IsActive = res.EmailConfirmed,
-                JoinDate = res.JoinDate,
-                LastName = res.LastName,
-                UserName = res.UserName,
-            }; 
+            return res;
         }
 
-        public IEnumerable<GetUserDto> GetUsers()
+        public IEnumerable<ApplicationUser> GetUsers()
         {
-            var result = AppDbContext.Users.AsParallel();
-            return result.ToList().Select(x => new GetUserDto
-            {
-                Id = x.Id,
-                Birthday = x.Birthday,
-                Email = x.Email,
-                FirstName = x.FirstName,
-                IsActive = x.EmailConfirmed,
-                JoinDate = x.JoinDate,
-                LastName = x.LastName,
-                UserName = x.UserName,
-            });
+            return AppDbContext.Users.AsParallel();
         }
 
         public async Task<ServerResponse<IEnumerable<IdentityError>>> CreateUser(ApplicationUser user, string password)
