@@ -1,16 +1,21 @@
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Repositories;
+using GameHeavenAPI.Repositories.CPUs;
+using GameHeavenAPI.Repositories.DirectX;
+using GameHeavenAPI.Repositories.Franchises;
+using GameHeavenAPI.Repositories.Genres;
+using GameHeavenAPI.Repositories.GPUs;
+using GameHeavenAPI.Repositories.Oses;
+using GameHeavenAPI.Repositories.Platforms;
+using GameHeavenAPI.Repositories.Statuses;
 using GameHeavenAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -35,6 +40,14 @@ namespace GameHeavenAPI
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IPublishersRepository, PublishersRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IPlatformRepository, PlatformRepository>();
+            services.AddScoped<IFranchiseRepository, FranchiseRepository>();
+            services.AddScoped<IOsRepository, OsRepository>();
+            services.AddScoped<ICPURepository, CPURepository>();
+            services.AddScoped<IGPURepository, GPURepository>();
+            services.AddScoped<IStatusRepository, StatusRepository>();
+            services.AddScoped<IDirectXRepository, DirectXRepository>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
@@ -52,6 +65,7 @@ namespace GameHeavenAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GameHeavenAPI v1"));
+
             }
 
             app.UseHttpsRedirection();
