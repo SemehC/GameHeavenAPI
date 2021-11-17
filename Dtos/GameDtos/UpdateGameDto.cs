@@ -1,4 +1,6 @@
-﻿using GameHeavenAPI.Entities;
+﻿using GameHeavenAPI.Dtos.StatusDtos;
+using GameHeavenAPI.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,16 +11,13 @@ namespace GameHeavenAPI.Dtos.GameDtos
 {
     public class UpdateGameDto
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string Description { get; set; }
-        [Required]
         public double Price { get; set; }    
-        [Required]
         public float Discount { get; set; }
-        [Required]
         public DateTime ReleaseDate { get; set; }
-        public string Status { get; set; }
+        public UpdateStatusDto Status { get; set; }
+        public IList<IFormFile> Images { get; set; }
+        public IList<int> DeveloperIds { get; set; }
     }
 }

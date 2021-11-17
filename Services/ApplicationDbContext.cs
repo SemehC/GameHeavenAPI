@@ -22,12 +22,24 @@ namespace GameHeavenAPI.Services
         public DbSet<PcPartsCart> PcPartsCarts { get; set; }
         public DbSet<GameImage> GameImages { get; set; }
         public DbSet<PCBuild> PCBuilds { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Platform> Platforms { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Os> Oses { get; set; }
+        public DbSet<DirectXVersion> DirectXVersions { get; set; }
+        public DbSet<CPU> CPUs { get; set; }
+        public DbSet<GPU> GPUs { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Game>().HasMany(game=>game.Images).WithOne(image=>image.Game).OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

@@ -13,5 +13,6 @@ namespace GameHeavenAPI.Entities
         public string   DeveloperDescription { get; set; }
         public string DeveloperPassword { get; set; }
         public DateTimeOffset JoinDate { get; init; }
+        public IList<Game> Games { get; set; }
     }
 }

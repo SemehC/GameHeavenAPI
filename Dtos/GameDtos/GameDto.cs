@@ -1,10 +1,15 @@
 ﻿using GameHeavenAPI.Dtos.DeveloperDtos;
+using GameHeavenAPI.Dtos.FranchiseDtos;
+using GameHeavenAPI.Dtos.GenreDtos;
+using GameHeavenAPI.Dtos.PlatformDtos;
 using GameHeavenAPI.Dtos.PublisherDtos;
+using GameHeavenAPI.Dtos.StatusDtos;
+using GameHeavenAPI.Dtos.SystemRequirementsDtos;
 using GameHeavenAPI.Entities;
 using System;
 using System.Collections.Generic;
 
-namespace GameHeavenAPI
+namespace GameHeavenAPI.Dtos.GameDtos
 {
     public class GameDto
     {
@@ -13,14 +18,16 @@ namespace GameHeavenAPI
         public string Description { get; set; }
         public double Price { get; set; }
         public float Discount { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public string Status { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+        public StatusDto Status { get; set; }
         public bool Approved { get; set; }
         public IList<DeveloperDto> Developers { get; set; }
         public PublisherDto Publisher { get; set; }
         public IList<GameImage> Images { get; set; }
-        public Franchise Franchise { get; set; }
-        public RecommendedSystemRequirements RecommendedSystemRequirements { get; set; }
-        public MinimumSystemRequirements MinimumSystemRequirements { get; set; }
+        public IList<GenreDto> Genres { get; set; }
+        public IList<PlatformDto> Platforms { get; set; }
+        public FranchiseDto Franchise { get; set; }
+        public SystemRequirementsDto RecommendedSystemRequirements { get; set; }
+        public SystemRequirementsDto MinimumSystemRequirements { get; set; }
     }
 }

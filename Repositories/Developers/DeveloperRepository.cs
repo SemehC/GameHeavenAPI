@@ -18,9 +18,9 @@ namespace GameHeavenAPI.Repositories
             AppDbContext = appDbContext;
         }
 
-        public  IEnumerable<Developer> GetDevelopers()
+        public IList<Developer> GetDevelopers()
         {
-            return AppDbContext.Developers.AsParallel();
+            return AppDbContext.Developers.ToList();
         }
         public async Task<ServerResponse<IEnumerable<IdentityError>>> CreateDeveloper(Developer pub)
         {

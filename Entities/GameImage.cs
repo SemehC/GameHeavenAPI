@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Entities
@@ -9,6 +10,7 @@ namespace GameHeavenAPI.Entities
     {
         public int Id { get; set; }
         public string Path { get; set; }
+        [JsonIgnore]
         public Game Game { get; set; }
         public string Alt { get; set; }
 

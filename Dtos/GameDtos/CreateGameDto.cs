@@ -1,4 +1,7 @@
-﻿using GameHeavenAPI.Entities;
+﻿using GameHeavenAPI.Dtos.FranchiseDtos;
+using GameHeavenAPI.Dtos.SystemRequirementsDtos;
+using GameHeavenAPI.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,9 +18,21 @@ namespace GameHeavenAPI.Dtos.GameDtos
         public string Description { get; set; }
         [Required]
         public double Price { get; set; }
-        [Required]
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
         [Required]
         public int PublisherId { get; set; }
+        [Required]
+        public int StatusId { get; set; }
+        [Required]
+        public IList<int> PlatformIds { get; set; }
+        [Required]
+        public IList<IFormFile> Images { get; set; }
+        [Required]
+        public IList<int> GenresIds { get; set; }
+        public int? FranchiseId { get; set; }
+        public CreateSystemRequirementsDto? RecommendedSystemRequirements { get; set; }
+        public CreateSystemRequirementsDto? MinimumSystemRequirements { get; set; }
+        public IList<int>? DeveloperIds { get; set; }
+
     }
 }

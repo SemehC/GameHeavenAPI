@@ -8,12 +8,9 @@ namespace GameHeavenAPI.Dtos.PublisherDtos
 {
     public record PublisherDto
     {
-
-        [Required]
+        public int Id { get; set; }
         public string PublisherName { get; set; }
-        [Required]
         public string PublisherDescription { get; set; }
-        [Required]
         public string PublisherEmail { get; set; }
     }
 }
