@@ -68,7 +68,9 @@ namespace GameHeavenAPI.Repositories
                 gameToBeUpdated.ReleaseDate = game.ReleaseDate;
                 gameToBeUpdated.Price = game.Price;
                 gameToBeUpdated.Franchise = game.Franchise;
-                gameToBeUpdated.Images = game.Images;
+                gameToBeUpdated.ImagesPath = game.ImagesPath;
+                gameToBeUpdated.VideosPath = game.VideosPath;
+                gameToBeUpdated.CoverPath = game.CoverPath;
                 gameToBeUpdated.Status = game.Status;
                 _applicationDbContext.Games.Update(gameToBeUpdated);
                 await _applicationDbContext.SaveChangesAsync();

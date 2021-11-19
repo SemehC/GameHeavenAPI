@@ -33,8 +33,11 @@ namespace GameHeavenAPI
         {
             return applicationDbContext.Games.Include(game => game.Developers)
                 .Include(game => game.Publisher)
-                .Include(game => game.Images)
                 .Include(game => game.MinimumSystemRequirements)
+                .Include(game => game.MinimumSystemRequirements.GPU)
+                .Include(game => game.MinimumSystemRequirements.CPU)
+                .Include(game => game.MinimumSystemRequirements.DirectX)
+                .Include(game => game.MinimumSystemRequirements.Os)
                 .Include(game => game.RecommendedSystemRequirements)
                 .Include(game => game.Genres)
                 .Include(game => game.Franchise)
@@ -53,10 +56,10 @@ namespace GameHeavenAPI
         {
             return new SystemRequirementsDto
             {
-                CPU = minimumSystemRequirements.CPU.AsDto(),
-                GPU = minimumSystemRequirements.GPU.AsDto(),
-                DirectX = minimumSystemRequirements.DirectX.AsDto(),
-                Os = minimumSystemRequirements.Os.AsDto(),
+                CPU = minimumSystemRequirements.CPU?.AsDto(),
+                GPU = minimumSystemRequirements.GPU?.AsDto(),
+                DirectX = minimumSystemRequirements.DirectX?.AsDto(),
+                Os = minimumSystemRequirements.Os?.AsDto(),
                 AdditionalNotes = minimumSystemRequirements.AdditionalNotes,
                 Ram = minimumSystemRequirements.Ram,
                 Storage = minimumSystemRequirements.Storage,
@@ -67,10 +70,10 @@ namespace GameHeavenAPI
         {
             return new SystemRequirementsDto
             {
-                CPU = recommendedSystemRequirements.CPU.AsDto(),
-                GPU = recommendedSystemRequirements.GPU.AsDto(),
-                DirectX = recommendedSystemRequirements.DirectX.AsDto(),
-                Os = recommendedSystemRequirements.Os.AsDto(),
+                CPU = recommendedSystemRequirements.CPU?.AsDto(),
+                GPU = recommendedSystemRequirements.GPU?.AsDto(),
+                DirectX = recommendedSystemRequirements.DirectX?.AsDto(),
+                Os = recommendedSystemRequirements.Os?.AsDto(),
                 AdditionalNotes = recommendedSystemRequirements.AdditionalNotes,
                 Ram = recommendedSystemRequirements.Ram,
                 Storage = recommendedSystemRequirements.Storage,
@@ -183,7 +186,9 @@ namespace GameHeavenAPI
                 Developers = game.Developers?.Select(developer => developer.AsDto()).ToList(),
                 Discount = game.Discount,
                 Franchise = game.Franchise?.AsDto(),
-                Images = game.Images,
+                ImagesPath = game.ImagesPath,
+                CoverPath = game.CoverPath,
+                VideosPath = game.VideosPath,
                 Price = game.Price,
                 Publisher = game.Publisher.AsDto(),
                 MinimumSystemRequirements = game.MinimumSystemRequirements?.AsDto(),

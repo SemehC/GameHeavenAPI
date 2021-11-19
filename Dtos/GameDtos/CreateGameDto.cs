@@ -26,7 +26,10 @@ namespace GameHeavenAPI.Dtos.GameDtos
         [Required]
         public IList<int> PlatformIds { get; set; }
         [Required]
+        public IFormFile Cover { get; set; }
+        [Required]
         public IList<IFormFile> Images { get; set; }
+        public IList<IFormFile>? Videos { get; set; }
         [Required]
         public IList<int> GenresIds { get; set; }
         public int? FranchiseId { get; set; }

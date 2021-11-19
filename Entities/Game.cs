@@ -10,6 +10,9 @@ namespace GameHeavenAPI.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string ImagesPath { get; set; }
+        public string CoverPath { get; set; }
+        public string VideosPath { get; set; }
         public double Price { get; set; }
         public float Discount { get; set; }
         public DateTime? ReleaseDate { get; set; }
@@ -19,7 +22,6 @@ namespace GameHeavenAPI.Entities
         public IList<Developer>? Developers { get; set; }
         public Publisher Publisher { get; set; }
         public IList<Platform> Platforms { get; set; }
-        public IList<GameImage> Images { get; set; }
         public Franchise? Franchise { get; set; }
         public RecommendedSystemRequirements? RecommendedSystemRequirements { get; set; }
         public MinimumSystemRequirements? MinimumSystemRequirements { get; set; }

@@ -9,10 +9,10 @@ namespace GameHeavenAPI.Dtos.SystemRequirementsDtos
     public class UpdateSystemRequirementsDto
     {
         public int Storage { get; set; }
-        public UpdateOsDto Os { get; set; }
-        public UpdateGPUDto GPU { get; set; }
-        public UpdateCPUDto CPU { get; set; }
-        public UpdateDirectXDto DirectX { get; set; }
+        public int OsId { get; set; }
+        public int GPUId { get; set; }
+        public int CPUId { get; set; }
+        public int DirectXId { get; set; }
         public int Ram { get; set; }
         public string AdditionalNotes { get; set; }
     }
