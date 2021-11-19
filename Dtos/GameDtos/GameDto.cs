@@ -21,13 +21,16 @@ namespace GameHeavenAPI.Dtos.GameDtos
         public DateTime? ReleaseDate { get; set; }
         public StatusDto Status { get; set; }
         public bool Approved { get; set; }
+        public string ImagesPath { get; set; }
+        public string CoverPath { get; set; }
+        public string VideosPath { get; set; }
         public IList<DeveloperDto> Developers { get; set; }
         public PublisherDto Publisher { get; set; }
-        public IList<GameImage> Images { get; set; }
         public IList<GenreDto> Genres { get; set; }
         public IList<PlatformDto> Platforms { get; set; }
         public FranchiseDto Franchise { get; set; }
         public SystemRequirementsDto RecommendedSystemRequirements { get; set; }
         public SystemRequirementsDto MinimumSystemRequirements { get; set; }
+
     }
 }

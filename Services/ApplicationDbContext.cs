@@ -20,7 +20,6 @@ namespace GameHeavenAPI.Services
         public DbSet<PCSpecifications> PCSpecifications { get; set; }
         public DbSet<GamesCart> GamesCarts { get; set; }
         public DbSet<PcPartsCart> PcPartsCarts { get; set; }
-        public DbSet<GameImage> GameImages { get; set; }
         public DbSet<PCBuild> PCBuilds { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Platform> Platforms { get; set; }
@@ -34,12 +33,6 @@ namespace GameHeavenAPI.Services
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Game>().HasMany(game=>game.Images).WithOne(image=>image.Game).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
