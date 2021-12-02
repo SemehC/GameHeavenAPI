@@ -25,8 +25,8 @@ namespace GameHeavenAPI.Dtos.GameDtos
         public IList<int>? PlatformIds { get; set; }
         public IList<int>? GenresIds { get; set; }
         public int? FranchiseId { get; set; }
-        public UpdateSystemRequirementsDto? RecommendedSystemRequirements { get; set; }
-        public UpdateSystemRequirementsDto? MinimumSystemRequirements { get; set; }
+        public UpdateSystemRequirementsDto? UpdatedRecommendedSystemRequirements { get; set; }
+        public UpdateSystemRequirementsDto? UpdatedMinimumSystemRequirements { get; set; }
         public IList<int>? DeveloperIds { get; set; }
     }
 }

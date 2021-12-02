@@ -8,7 +8,6 @@ namespace GameHeavenAPI.Entities
     public class PcPartsCart
     {
         public int Id { get; set; }
-        public User User { get; set; }
         public IList<PcPart> PcParts { get; set; }
     }
 }

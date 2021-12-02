@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Services
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<Publisher> Publisher { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<PcPart> PcParts { get; set; }
@@ -28,8 +28,6 @@ namespace GameHeavenAPI.Services
         public DbSet<DirectXVersion> DirectXVersions { get; set; }
         public DbSet<CPU> CPUs { get; set; }
         public DbSet<GPU> GPUs { get; set; }
-
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 

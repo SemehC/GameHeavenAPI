@@ -11,8 +11,12 @@ namespace GameHeavenAPI.Repositories
 {
     public interface IDeveloperRepository
     {
-        IList<Developer> GetDevelopers();
-        Task<ServerResponse<IEnumerable<IdentityError>>> CreateDeveloper(Developer pub);
+        Task<Developer> CreateDeveloperAsync(Developer developer);
+        Task<IList<Developer>> GetDevelopersAsync();
+        Task<Developer> GetDeveloperAsync(int id);
+        Task<Developer> GetDeveloperByUserIdAsync(string id);
+        Task DeleteDeveloperAsync(int id);
+        Task UpdateDeveloperAsync(Developer developer);
 
     }
 }

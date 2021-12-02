@@ -2,6 +2,7 @@
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,27 +12,63 @@ namespace GameHeavenAPI.Repositories
 {
     public class DeveloperRepository : IDeveloperRepository
     {
-        private readonly ApplicationDbContext AppDbContext;
+        private readonly ApplicationDbContext _appDbContext;
 
         public DeveloperRepository(ApplicationDbContext appDbContext)
         {
-            AppDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
 
-        public IList<Developer> GetDevelopers()
+        public async Task<IList<Developer>> GetDevelopersAsync()
         {
-            return AppDbContext.Developers.ToList();
+            return await _appDbContext.CompleteDeveloper().Include(developer => developer.User).ToListAsync();
         }
-        public async Task<ServerResponse<IEnumerable<IdentityError>>> CreateDeveloper(Developer pub)
+
+        public async Task<Developer> GetDeveloperAsync(int DeveloperId)
         {
-            var x = await AppDbContext.Developers.AddAsync(pub);
-            AppDbContext.SaveChanges();
-            var resp = new ServerResponse<IEnumerable<IdentityError>>();
+            var res = await _appDbContext.CompleteDeveloper().FirstOrDefaultAsync(Developer => Developer.Id == DeveloperId);
+            if (res == null)
+            {
+                return null;
+            }
+            return res;
+        }
+        public async Task DeleteDeveloperAsync(int DeveloperId)
+        {
+            var result = await _appDbContext.CompleteDeveloper().FirstOrDefaultAsync(e => e.Id == DeveloperId);
+            if (result != null)
+            {
+                _appDbContext.Developers.Remove(result);
+                await _appDbContext.SaveChangesAsync();
+            }
+        }
 
-            resp.Success = true;
-            resp.Message = new List<string> { x.Entity.Id.ToString() };
 
-            return resp;
+        public async Task UpdateDeveloperAsync(Developer pub)
+        {
+            var res = await _appDbContext.Developers.FirstOrDefaultAsync(p => p.Id == pub.Id);
+            if (res != null)
+            {
+                res.Name = pub.Name;
+                res.Description = pub.Description;
+                res.WebsiteLink = pub.WebsiteLink;
+                res.TwitterLink = pub.TwitterLink;
+                res.FacebookLink = pub.FacebookLink;
+                res.CoverPath = pub.CoverPath;
+                await _appDbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Developer> CreateDeveloperAsync(Developer pub)
+        {
+            var createdDeveloper = (await _appDbContext.Developers.AddAsync(pub)).Entity;
+            await _appDbContext.SaveChangesAsync();
+            return createdDeveloper;
+        }
+
+        public async Task<Developer> GetDeveloperByUserIdAsync(string id)
+        {
+            return await _appDbContext.CompleteDeveloper().FirstOrDefaultAsync(d => d.User.Id == id);
         }
     }
 }
