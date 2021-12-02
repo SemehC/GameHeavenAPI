@@ -15,63 +15,64 @@ namespace GameHeavenAPI.Repositories
     public class PublishersRepository : IPublishersRepository
     {
 
-        private readonly ApplicationDbContext AppDbContext;
+        private readonly ApplicationDbContext _appDbContext;
 
         public PublishersRepository(ApplicationDbContext appDbContext)
         {
-            AppDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
 
-        public IEnumerable<Publisher> GetPublishers()
+        public async Task<IList<Publisher>> GetPublishersAsync()
         {
-            var r = AppDbContext.Publisher.AsParallel();
-
-            return r.ToList();
+            return await _appDbContext.CompletePublisher().ToListAsync();
         }
 
-        public async Task<ServerResponse<IEnumerable<IdentityError>>> CreatePublisher(Publisher pub)
+        public async Task<Publisher> GetPublisherAsync(int PublisherId)
         {
-            var x = await AppDbContext.Publisher.AddAsync(pub);
-            AppDbContext.SaveChanges();
-            var resp = new ServerResponse<IEnumerable<IdentityError>>();
-
-            resp.Success = true;
-            resp.Message = new List<string> { x.Entity.Id.ToString() };
-
-            return resp;
-        }
-        
-        public  async Task<Publisher> GetPublisherAsync(int PublisherId)
-        {
-            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(publisher => publisher.Id == PublisherId);
+            var res = await _appDbContext.CompletePublisher().FirstOrDefaultAsync(publisher => publisher.Id == PublisherId);
             if (res == null)
             {
                 return null;
             }
             return res;
         }
-        public async Task DeletePublisher(int PublisherId)
+        public async Task DeletePublisherAsync(int PublisherId)
         {
-            var result = await AppDbContext.Publisher.FirstOrDefaultAsync(e => e.Id == PublisherId);
+            var result = await _appDbContext.Publishers.FirstOrDefaultAsync(e => e.Id == PublisherId);
             if (result != null)
             {
-                AppDbContext.Publisher.Remove(result);
-                await AppDbContext.SaveChangesAsync();
+                _appDbContext.Publishers.Remove(result);
+                await _appDbContext.SaveChangesAsync();
             }
         }
         
 
-        public async Task UpdatePublisher(Publisher pub)
+        public async Task UpdatePublisherAsync(Publisher pub)
         {
-            var res = await AppDbContext.Publisher.FirstOrDefaultAsync(p => p.Id == pub.Id);
+            var res = await _appDbContext.Publishers.FirstOrDefaultAsync(p => p.Id == pub.Id);
             if (res != null)
             {
-                res.PublisherPassword = pub.PublisherPassword;
-                res.PublisherName = pub.PublisherName;
-                res.PublisherEmail = pub.PublisherEmail;
-                res.PublisherDescription = pub.PublisherDescription;
-                await AppDbContext.SaveChangesAsync();
+                res.Name = pub.Name;
+                res.Description = pub.Description;
+                await _appDbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<Publisher> CreatePublisherAsync(Publisher pub)
+        {
+            var createdPublisher = (await _appDbContext.Publishers.AddAsync(pub)).Entity;
+            await _appDbContext.SaveChangesAsync();
+            return createdPublisher;
+        }
+
+        public async Task<Publisher> GetPublisherByUserAsync(string id)
+        {
+            var res = await _appDbContext.CompletePublisher().FirstOrDefaultAsync(publisher => publisher.User.Id == id);
+            if (res == null)
+            {
+                return null;
+            }
+            return res;
         }
     }
 }

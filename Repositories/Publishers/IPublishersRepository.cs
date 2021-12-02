@@ -11,11 +11,11 @@ namespace GameHeavenAPI.Repositories
 {
     public interface IPublishersRepository
     {
-
-        Task<ServerResponse<IEnumerable<IdentityError>>> CreatePublisher(Publisher pub);
-        IEnumerable<Publisher> GetPublishers();
+        Task<Publisher> CreatePublisherAsync(Publisher pub);
+        Task<IList<Publisher>> GetPublishersAsync();
         Task<Publisher> GetPublisherAsync(int id);
-        Task DeletePublisher(int id);
-        Task UpdatePublisher(Publisher publisher);
+        Task DeletePublisherAsync(int id);
+        Task UpdatePublisherAsync(Publisher publisher);
+        Task<Publisher> GetPublisherByUserAsync(string id);
     }
 }

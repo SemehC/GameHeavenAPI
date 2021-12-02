@@ -1,0 +1,7 @@
+﻿namespace GameHeavenAPI.Configuration
+{
+    public class JwtConfig
+    {
+        public string Secret { get; set; }
+    }
+}

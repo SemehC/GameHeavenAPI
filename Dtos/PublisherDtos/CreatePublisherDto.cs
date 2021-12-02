@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,16 +8,20 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Dtos.PublisherDtos
 {
-    public record CreatePublisherDto
+    public class CreatePublisherDto : RequestResults
     {
         [Required]
-        public string PublisherName { get; set; }
+        public string Name { get; set; }
         [Required]
-        public string PublisherDescription { get; set; }
+        public string Description { get; set; }
         [Required]
-        public string PublisherEmail { get; set; }
-        [Required]
-        public string PublisherPassword { get; set; }
+        public IFormFile Cover { get; set; }
+        public string UserId { get; set; }
+        public IdentityUser User { get; set; }
+        public string WebsiteLink { get; set; }
+        public string FacebookLink { get; set; }
+        public string TwitterLink { get; set; }
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,13 +9,12 @@ namespace GameHeavenAPI.Dtos.DeveloperDtos
 {
     public class UpdateDeveloperDto
     {
-        [Required]
-        public string DeveloperName { get; set; }
-        [Required]
-        public string DeveloperDescription { get; set; }
-        [Required]
-        public string DeveloperEmail { get; set; }
-        [Required]
-        public string DeveloperPassword { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public IFormFile Cover { get; set; }
+        public string UserId { get; set; }
+        public string WebsiteLink { get; set; }
+        public string FacebookLink { get; set; }
+        public string TwitterLink { get; set; }
     }
 }
