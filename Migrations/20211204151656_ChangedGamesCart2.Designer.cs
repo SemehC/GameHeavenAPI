@@ -4,14 +4,16 @@ using GameHeavenAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211204151656_ChangedGamesCart2")]
+    partial class ChangedGamesCart2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,32 +357,6 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("PCSpecifications");
                 });
 
-            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Paid")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PayerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("PayerId");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.Property<int>("Id")
@@ -528,21 +504,6 @@ namespace GameHeavenAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-                });
-
-            modelBuilder.Entity("GamePayment", b =>
-                {
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentsPaymentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GamesId", "PaymentsPaymentId");
-
-                    b.HasIndex("PaymentsPaymentId");
-
-                    b.ToTable("GamePayment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1071,15 +1032,6 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Storage");
                 });
 
-            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Payer")
-                        .WithMany()
-                        .HasForeignKey("PayerId");
-
-                    b.Navigation("Payer");
-                });
-
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.HasOne("GameHeavenAPI.Entities.PcPartsCart", null)
@@ -1128,21 +1080,6 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("GPU");
 
                     b.Navigation("Os");
-                });
-
-            modelBuilder.Entity("GamePayment", b =>
-                {
-                    b.HasOne("GameHeavenAPI.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GameHeavenAPI.Entities.Payment", null)
-                        .WithMany()
-                        .HasForeignKey("PaymentsPaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

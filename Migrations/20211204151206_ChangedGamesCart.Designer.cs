@@ -4,35 +4,22 @@ using GameHeavenAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211204151206_ChangedGamesCart")]
+    partial class ChangedGamesCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("GameGamesCart", b =>
-                {
-                    b.Property<int>("CartsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CartsId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("GameGamesCart");
-                });
 
             modelBuilder.Entity("GameGenre", b =>
                 {
@@ -147,6 +134,9 @@ namespace GameHeavenAPI.Migrations
                     b.Property<int?>("FranchiseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GamesCartId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagesPath")
                         .HasColumnType("nvarchar(max)");
 
@@ -177,6 +167,8 @@ namespace GameHeavenAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FranchiseId");
+
+                    b.HasIndex("GamesCartId");
 
                     b.HasIndex("MinimumSystemRequirementsId");
 
@@ -355,32 +347,6 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("PCSpecifications");
                 });
 
-            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Paid")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PayerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("PayerId");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.Property<int>("Id")
@@ -528,21 +494,6 @@ namespace GameHeavenAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-                });
-
-            modelBuilder.Entity("GamePayment", b =>
-                {
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentsPaymentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GamesId", "PaymentsPaymentId");
-
-                    b.HasIndex("PaymentsPaymentId");
-
-                    b.ToTable("GamePayment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -899,21 +850,6 @@ namespace GameHeavenAPI.Migrations
                     b.HasDiscriminator().HasValue("Storage");
                 });
 
-            modelBuilder.Entity("GameGamesCart", b =>
-                {
-                    b.HasOne("GameHeavenAPI.Entities.GamesCart", null)
-                        .WithMany()
-                        .HasForeignKey("CartsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GameHeavenAPI.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GameGenre", b =>
                 {
                     b.HasOne("GameHeavenAPI.Entities.Game", null)
@@ -947,6 +883,10 @@ namespace GameHeavenAPI.Migrations
                     b.HasOne("GameHeavenAPI.Entities.Franchise", "Franchise")
                         .WithMany()
                         .HasForeignKey("FranchiseId");
+
+                    b.HasOne("GameHeavenAPI.Entities.GamesCart", null)
+                        .WithMany("Games")
+                        .HasForeignKey("GamesCartId");
 
                     b.HasOne("GameHeavenAPI.Entities.MinimumSystemRequirements", "MinimumSystemRequirements")
                         .WithMany()
@@ -1071,15 +1011,6 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Storage");
                 });
 
-            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Payer")
-                        .WithMany()
-                        .HasForeignKey("PayerId");
-
-                    b.Navigation("Payer");
-                });
-
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.HasOne("GameHeavenAPI.Entities.PcPartsCart", null)
@@ -1128,21 +1059,6 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("GPU");
 
                     b.Navigation("Os");
-                });
-
-            modelBuilder.Entity("GamePayment", b =>
-                {
-                    b.HasOne("GameHeavenAPI.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GameHeavenAPI.Entities.Payment", null)
-                        .WithMany()
-                        .HasForeignKey("PaymentsPaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1201,6 +1117,11 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Developers");
 
                     b.Navigation("Platforms");
+                });
+
+            modelBuilder.Entity("GameHeavenAPI.Entities.GamesCart", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPartsCart", b =>

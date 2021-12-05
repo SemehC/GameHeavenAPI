@@ -4,9 +4,11 @@ using GameHeavenAPI.Repositories;
 using GameHeavenAPI.Repositories.CPUs;
 using GameHeavenAPI.Repositories.DirectX;
 using GameHeavenAPI.Repositories.Franchises;
+using GameHeavenAPI.Repositories.GameCarts;
 using GameHeavenAPI.Repositories.Genres;
 using GameHeavenAPI.Repositories.GPUs;
 using GameHeavenAPI.Repositories.Oses;
+using GameHeavenAPI.Repositories.Payments;
 using GameHeavenAPI.Repositories.Platforms;
 using GameHeavenAPI.Repositories.Statuses;
 using GameHeavenAPI.Services;
@@ -43,6 +45,8 @@ namespace GameHeavenAPI
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
             services.AddScoped<IDeveloperRepository, DeveloperRepository>();
+            services.AddScoped<ICartRepository, CartReposiory>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IPublishersRepository, PublishersRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();

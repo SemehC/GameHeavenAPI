@@ -89,6 +89,7 @@ namespace GameHeavenAPI.Controllers
         [DisableRequestSizeLimit]
         public async Task<ActionResult<GameDto>> CreateGameAsync([FromForm] CreateGameDto createGameDto)
         {
+
             string coverDirectoryPath = $"Uploads/Games/{createGameDto.Name}/Cover";
             var filePath = $"{coverDirectoryPath}/{createGameDto.Cover.FileName}";
             var coverPathencoded = HttpUtility.UrlEncode(filePath);

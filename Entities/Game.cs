@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Entities
@@ -23,6 +24,10 @@ namespace GameHeavenAPI.Entities
         public Publisher Publisher { get; set; }
         public IList<Platform> Platforms { get; set; }
         public Franchise? Franchise { get; set; }
+        [JsonIgnore]
+        public IList<GamesCart> Carts{ get; set; }
+        [JsonIgnore]
+        public IList<Payment> Payments { get; set; }
         public RecommendedSystemRequirements? RecommendedSystemRequirements { get; set; }
         public MinimumSystemRequirements? MinimumSystemRequirements { get; set; }
     }

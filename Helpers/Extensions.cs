@@ -18,6 +18,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameHeavenAPI.Dtos.DirectXDtos;
 using GameHeavenAPI.Dtos.SystemRequirementsDtos;
+using GameHeavenAPI.Dtos.CartDtos;
+using GameHeavenAPI.Dtos.PaymentDto;
 
 namespace GameHeavenAPI
 {
@@ -98,6 +100,26 @@ namespace GameHeavenAPI
             {
                 Id = os.Id,
                 Name = os.Name
+            };
+        }
+        public static CartDto AsDto(this GamesCart gamesCart)
+        {
+            return new CartDto
+            {
+                Id = gamesCart.Id,
+                Games = gamesCart.Games != null ? gamesCart.Games.Select(game => game.AsDto()).ToList() : new List<GameDto>(),
+                User = gamesCart.User
+            };
+        }
+        public static PaymentDto AsDto(this Payment payment)
+        {
+            return new PaymentDto
+            {
+                PaymentId = payment.PaymentId,
+                Amount = payment.Amount,
+                Date = payment.Date,
+                Games = payment.Games.Select(game => game.AsDto()).ToList(),
+                Payer = payment.Payer
             };
         }
         public static CPUDto AsDto(this CPU cpu)
@@ -190,7 +212,7 @@ namespace GameHeavenAPI
                 Name = game.Name,
                 Approved = game.Approved,
                 Description = game.Description,
-                Genres = game.Genres.Select(genre=> genre.AsDto()).ToList(),
+                Genres = game.Genres?.Select(genre=> genre.AsDto()).ToList(),
                 Developers = game.Developers?.Select(developer => developer.AsDto()).ToList(),
                 Discount = game.Discount,
                 Franchise = game.Franchise?.AsDto(),

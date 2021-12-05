@@ -28,6 +28,7 @@ namespace GameHeavenAPI.Services
         public DbSet<DirectXVersion> DirectXVersions { get; set; }
         public DbSet<CPU> CPUs { get; set; }
         public DbSet<GPU> GPUs { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
