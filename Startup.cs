@@ -78,7 +78,7 @@ namespace GameHeavenAPI
                     RequireExpirationTime = false,
                 };
             });
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
              {
                  options.SignIn.RequireConfirmedAccount = true;
                  options.SignIn.RequireConfirmedEmail = true;

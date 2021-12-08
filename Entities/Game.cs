@@ -27,6 +27,8 @@ namespace GameHeavenAPI.Entities
         [JsonIgnore]
         public IList<GamesCart> Carts{ get; set; }
         [JsonIgnore]
+        public IList<ApplicationUser> Users{ get; set; }
+        [JsonIgnore]
         public IList<Payment> Payments { get; set; }
         public RecommendedSystemRequirements? RecommendedSystemRequirements { get; set; }
         public MinimumSystemRequirements? MinimumSystemRequirements { get; set; }

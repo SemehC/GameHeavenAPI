@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Services
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Developer> Developers { get; set; }

@@ -24,8 +24,8 @@ namespace GameHeavenAPI.Controllers
     public class DeveloperController : ControllerBase
     {
         private readonly IDeveloperRepository _repository;
-        private readonly UserManager<IdentityUser> _userManager;
-        public DeveloperController(IDeveloperRepository repository, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public DeveloperController(IDeveloperRepository repository, UserManager<ApplicationUser> userManager)
         {
             _repository = repository;
             _userManager = userManager;

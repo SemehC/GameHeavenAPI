@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameHeavenAPI.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace GameHeavenAPI.Dtos.DeveloperDtos
         [Required]
         public IFormFile Cover { get; set; }
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public string WebsiteLink { get; set; }
         public string FacebookLink { get; set; }
         public string TwitterLink { get; set; }

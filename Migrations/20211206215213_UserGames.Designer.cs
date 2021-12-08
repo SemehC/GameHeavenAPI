@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameHeavenAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211201202934_almostfinishedsite")]
-    partial class almostfinishedsite
+    [Migration("20211206215213_UserGames")]
+    partial class UserGames
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,36 @@ namespace GameHeavenAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ApplicationUserGame", b =>
+                {
+                    b.Property<int>("GamesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("GamesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ApplicationUserGame");
+                });
+
+            modelBuilder.Entity("GameGamesCart", b =>
+                {
+                    b.Property<int>("CartsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GamesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartsId", "GamesId");
+
+                    b.HasIndex("GamesId");
+
+                    b.ToTable("GameGamesCart");
+                });
 
             modelBuilder.Entity("GameGenre", b =>
                 {
@@ -34,6 +64,71 @@ namespace GameHeavenAPI.Migrations
                     b.HasIndex("GenresId");
 
                     b.ToTable("GameGenre");
+                });
+
+            modelBuilder.Entity("GameHeavenAPI.Entities.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("GameHeavenAPI.Entities.Developer", b =>
@@ -134,9 +229,6 @@ namespace GameHeavenAPI.Migrations
                     b.Property<int?>("FranchiseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GamesCartId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ImagesPath")
                         .HasColumnType("nvarchar(max)");
 
@@ -168,8 +260,6 @@ namespace GameHeavenAPI.Migrations
 
                     b.HasIndex("FranchiseId");
 
-                    b.HasIndex("GamesCartId");
-
                     b.HasIndex("MinimumSystemRequirementsId");
 
                     b.HasIndex("PublisherId");
@@ -188,7 +278,12 @@ namespace GameHeavenAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("GamesCarts");
                 });
@@ -342,6 +437,32 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("PCSpecifications");
                 });
 
+            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PayerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("PayerId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.Property<int>("Id")
@@ -491,6 +612,21 @@ namespace GameHeavenAPI.Migrations
                     b.ToTable("Statuses");
                 });
 
+            modelBuilder.Entity("GamePayment", b =>
+                {
+                    b.Property<int>("GamesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentsPaymentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GamesId", "PaymentsPaymentId");
+
+                    b.HasIndex("PaymentsPaymentId");
+
+                    b.ToTable("GamePayment");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -540,71 +676,6 @@ namespace GameHeavenAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -845,6 +916,36 @@ namespace GameHeavenAPI.Migrations
                     b.HasDiscriminator().HasValue("Storage");
                 });
 
+            modelBuilder.Entity("ApplicationUserGame", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GameGamesCart", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.GamesCart", null)
+                        .WithMany()
+                        .HasForeignKey("CartsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameHeavenAPI.Entities.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GameGenre", b =>
                 {
                     b.HasOne("GameHeavenAPI.Entities.Game", null)
@@ -866,7 +967,7 @@ namespace GameHeavenAPI.Migrations
                         .WithMany("Developers")
                         .HasForeignKey("GameId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -878,10 +979,6 @@ namespace GameHeavenAPI.Migrations
                     b.HasOne("GameHeavenAPI.Entities.Franchise", "Franchise")
                         .WithMany()
                         .HasForeignKey("FranchiseId");
-
-                    b.HasOne("GameHeavenAPI.Entities.GamesCart", null)
-                        .WithMany("Games")
-                        .HasForeignKey("GamesCartId");
 
                     b.HasOne("GameHeavenAPI.Entities.MinimumSystemRequirements", "MinimumSystemRequirements")
                         .WithMany()
@@ -908,6 +1005,15 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("RecommendedSystemRequirements");
 
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("GameHeavenAPI.Entities.GamesCart", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GameHeavenAPI.Entities.MinimumSystemRequirements", b =>
@@ -997,6 +1103,15 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Storage");
                 });
 
+            modelBuilder.Entity("GameHeavenAPI.Entities.Payment", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", "Payer")
+                        .WithMany()
+                        .HasForeignKey("PayerId");
+
+                    b.Navigation("Payer");
+                });
+
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPart", b =>
                 {
                     b.HasOne("GameHeavenAPI.Entities.PcPartsCart", null)
@@ -1013,7 +1128,7 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("GameHeavenAPI.Entities.Publisher", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -1047,6 +1162,21 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Os");
                 });
 
+            modelBuilder.Entity("GamePayment", b =>
+                {
+                    b.HasOne("GameHeavenAPI.Entities.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameHeavenAPI.Entities.Payment", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentsPaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1058,7 +1188,7 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1067,7 +1197,7 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1082,7 +1212,7 @@ namespace GameHeavenAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1091,7 +1221,7 @@ namespace GameHeavenAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("GameHeavenAPI.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1103,11 +1233,6 @@ namespace GameHeavenAPI.Migrations
                     b.Navigation("Developers");
 
                     b.Navigation("Platforms");
-                });
-
-            modelBuilder.Entity("GameHeavenAPI.Entities.GamesCart", b =>
-                {
-                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("GameHeavenAPI.Entities.PcPartsCart", b =>
