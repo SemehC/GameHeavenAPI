@@ -24,8 +24,8 @@ namespace GameHeavenAPI.Controllers
     public class PublisherController : ControllerBase
     {
         private readonly IPublishersRepository _repository;
-        private readonly UserManager<IdentityUser> _userManager;
-        public PublisherController(IPublishersRepository repository, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public PublisherController(IPublishersRepository repository, UserManager<ApplicationUser> userManager)
         {
             _repository = repository;
             _userManager = userManager;

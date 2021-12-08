@@ -10,6 +10,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using GameHeavenAPI.Dtos.Requests;
+using GameHeavenAPI.Entities;
+using GameHeavenAPI.Dtos.UserDtos;
+using System.IO;
+using System.Web;
+using GameHeavenAPI.Dtos;
+using GameHeavenAPI.Repositories;
+using GameHeavenAPI.Dtos.Responses;
 
 namespace GameHeavenAPI.Controllers
 {
@@ -20,19 +27,22 @@ namespace GameHeavenAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         protected readonly ILogger<UserSetupController> _logger;
-
+        private readonly IPublishersRepository _publishersRepository;
+        private readonly IGameRepository _gameRepository;
         public UserSetupController(
             ApplicationDbContext context,
             RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
-            ILogger<UserSetupController> logger)
+            UserManager<ApplicationUser> userManager,
+            ILogger<UserSetupController> logger, IGameRepository gameRepository, IPublishersRepository publishersRepository)
         {
             _logger = logger;
             _roleManager = roleManager;
             _userManager = userManager;
             _context = context;
+            _gameRepository = gameRepository;
+            _publishersRepository = publishersRepository;
         }
 
         [HttpGet]
@@ -96,19 +106,60 @@ namespace GameHeavenAPI.Controllers
         }
         [HttpPut]
         [Route("UpdateUser/{id}")]
-        public async Task<IActionResult> UpdateUser(string id, IdentityUser user)
+        public async Task<IActionResult> UpdateUser(string id, UpdateUserDto updateUserDto)
         {
             var userToBeUpdated = _userManager.Users.Where(user => user.Id.Equals(id)).First();
             if (userToBeUpdated is not null)
             {
-                var result = await _userManager.UpdateAsync(user);
-                return Ok(new Response
+                userToBeUpdated.UserName = updateUserDto.UserName;
+                userToBeUpdated.Email = updateUserDto.Email;
+                userToBeUpdated.FacebookLink = updateUserDto.FacebookLink;
+                userToBeUpdated.InstagramLink = updateUserDto.InstagramLink;
+                userToBeUpdated.TwitterLink = updateUserDto.TwitterLink;
+                if (updateUserDto.Cover is not null)
+                {
+                    var path = $"Uploads/Users/{userToBeUpdated.UserName}";
+
+                    if (Directory.Exists(path))
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    Directory.CreateDirectory(path);
+                    var filePath = $"{path}/{updateUserDto.Cover.FileName}";
+                    var encodedPath = HttpUtility.UrlEncode(filePath);
+                    var coverLink = $"https://localhost:5001/GetImage/{encodedPath}";
+                    using var stream = new FileStream(Path.Combine(path, updateUserDto.Cover.FileName), FileMode.Create);
+                    await updateUserDto.Cover.CopyToAsync(stream);
+                    userToBeUpdated.CoverPath = coverLink;
+                }
+                if (updateUserDto.ProfilePicture is not null)
+                {
+                    var path = $"Uploads/Users/{userToBeUpdated.UserName}";
+
+                    if (Directory.Exists(path))
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    Directory.CreateDirectory(path);
+                    var filePath = $"{path}/{updateUserDto.ProfilePicture.FileName}";
+                    var encodedPath = HttpUtility.UrlEncode(filePath);
+                    var pictureLink = $"https://localhost:5001/GetImage/{encodedPath}";
+                    using var stream = new FileStream(Path.Combine(path, updateUserDto.ProfilePicture.FileName), FileMode.Create);
+                    await updateUserDto.ProfilePicture.CopyToAsync(stream);
+                    userToBeUpdated.CoverPath = pictureLink;
+                }
+                UserDto userDto = new();
+
+                var publisher = await _publishersRepository.GetPublisherByUserAsync(userToBeUpdated.Id);
+                userDto.UserProperties = userToBeUpdated;
+                userDto.Publisher = publisher?.AsDto();
+                userDto.Roles = await _userManager.GetRolesAsync(userToBeUpdated);
+                userDto.OwnedGames = (await _gameRepository.GetUserOwnedGamesAsync(userToBeUpdated)).Select(game => game.AsDto()).ToList();
+                return Ok(new RegistrationResponseDto
                 {
                     Success = true,
-                    Messages = new List<string>()
-                    {
-                        "User updated successfully",
-                    }
+                    Messages = new List<string> { "Profile updated successfully"},
+                    User = userDto,
                 });
             }
             return BadRequest(new Response

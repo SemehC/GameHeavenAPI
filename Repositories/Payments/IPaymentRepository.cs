@@ -9,6 +9,7 @@ namespace GameHeavenAPI.Repositories.Payments
         Task<Payment> CreatePaymentAsync(Payment payment);
         Task<Payment> GetPaymentByIdAsync(int id);
         Task<IEnumerable<Payment>> GetPayments();
+        Task AddGamesToUser(GamesCart cart);
         Task UpdatePayment(Payment payment);
     }
 }

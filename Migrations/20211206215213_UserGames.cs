@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GameHeavenAPI.Migrations
 {
-    public partial class almostfinishedsite : Migration
+    public partial class UserGames : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,18 +71,6 @@ namespace GameHeavenAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Franchises", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GamesCarts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GamesCarts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -241,6 +229,47 @@ namespace GameHeavenAPI.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GamesCarts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamesCarts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GamesCarts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PayerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Paid = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.PaymentId);
+                    table.ForeignKey(
+                        name: "FK_Payments_AspNetUsers_PayerId",
+                        column: x => x.PayerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -510,8 +539,7 @@ namespace GameHeavenAPI.Migrations
                     PublisherId = table.Column<int>(type: "int", nullable: true),
                     FranchiseId = table.Column<int>(type: "int", nullable: true),
                     RecommendedSystemRequirementsId = table.Column<int>(type: "int", nullable: true),
-                    MinimumSystemRequirementsId = table.Column<int>(type: "int", nullable: true),
-                    GamesCartId = table.Column<int>(type: "int", nullable: true)
+                    MinimumSystemRequirementsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -520,12 +548,6 @@ namespace GameHeavenAPI.Migrations
                         name: "FK_Games_Franchises_FranchiseId",
                         column: x => x.FranchiseId,
                         principalTable: "Franchises",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Games_GamesCarts_GamesCartId",
-                        column: x => x.GamesCartId,
-                        principalTable: "GamesCarts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -552,6 +574,30 @@ namespace GameHeavenAPI.Migrations
                         principalTable: "Statuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserGame",
+                columns: table => new
+                {
+                    GamesId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserGame", x => new { x.GamesId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGame_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGame_Games_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -588,6 +634,30 @@ namespace GameHeavenAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameGamesCart",
+                columns: table => new
+                {
+                    CartsId = table.Column<int>(type: "int", nullable: false),
+                    GamesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameGamesCart", x => new { x.CartsId, x.GamesId });
+                    table.ForeignKey(
+                        name: "FK_GameGamesCart_Games_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameGamesCart_GamesCarts_CartsId",
+                        column: x => x.CartsId,
+                        principalTable: "GamesCarts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GameGenre",
                 columns: table => new
                 {
@@ -612,6 +682,30 @@ namespace GameHeavenAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GamePayment",
+                columns: table => new
+                {
+                    GamesId = table.Column<int>(type: "int", nullable: false),
+                    PaymentsPaymentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamePayment", x => new { x.GamesId, x.PaymentsPaymentId });
+                    table.ForeignKey(
+                        name: "FK_GamePayment_Games_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GamePayment_Payments_PaymentsPaymentId",
+                        column: x => x.PaymentsPaymentId,
+                        principalTable: "Payments",
+                        principalColumn: "PaymentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Platforms",
                 columns: table => new
                 {
@@ -630,6 +724,11 @@ namespace GameHeavenAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserGame_UsersId",
+                table: "ApplicationUserGame",
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -681,19 +780,24 @@ namespace GameHeavenAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameGamesCart_GamesId",
+                table: "GameGamesCart",
+                column: "GamesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GameGenre_GenresId",
                 table: "GameGenre",
                 column: "GenresId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GamePayment_PaymentsPaymentId",
+                table: "GamePayment",
+                column: "PaymentsPaymentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Games_FranchiseId",
                 table: "Games",
                 column: "FranchiseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Games_GamesCartId",
-                table: "Games",
-                column: "GamesCartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_MinimumSystemRequirementsId",
@@ -716,6 +820,11 @@ namespace GameHeavenAPI.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GamesCarts_UserId",
+                table: "GamesCarts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MinimumSystemRequirements_CPUId",
                 table: "MinimumSystemRequirements",
                 column: "CPUId");
@@ -734,6 +843,11 @@ namespace GameHeavenAPI.Migrations
                 name: "IX_MinimumSystemRequirements_OsId",
                 table: "MinimumSystemRequirements",
                 column: "OsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_PayerId",
+                table: "Payments",
+                column: "PayerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PCBuilds_PCSpecificationsId",
@@ -819,6 +933,9 @@ namespace GameHeavenAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ApplicationUserGame");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -837,7 +954,13 @@ namespace GameHeavenAPI.Migrations
                 name: "Developers");
 
             migrationBuilder.DropTable(
+                name: "GameGamesCart");
+
+            migrationBuilder.DropTable(
                 name: "GameGenre");
+
+            migrationBuilder.DropTable(
+                name: "GamePayment");
 
             migrationBuilder.DropTable(
                 name: "PCBuilds");
@@ -849,7 +972,13 @@ namespace GameHeavenAPI.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "GamesCarts");
+
+            migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "PCSpecifications");
@@ -859,9 +988,6 @@ namespace GameHeavenAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Franchises");
-
-            migrationBuilder.DropTable(
-                name: "GamesCarts");
 
             migrationBuilder.DropTable(
                 name: "MinimumSystemRequirements");

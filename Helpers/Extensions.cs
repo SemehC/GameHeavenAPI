@@ -119,7 +119,9 @@ namespace GameHeavenAPI
                 Amount = payment.Amount,
                 Date = payment.Date,
                 Games = payment.Games.Select(game => game.AsDto()).ToList(),
-                Payer = payment.Payer
+                Payer = payment.Payer,
+                Paid = payment.Paid
+                
             };
         }
         public static CPUDto AsDto(this CPU cpu)
@@ -146,8 +148,8 @@ namespace GameHeavenAPI
         {
             return new StatusDto
             {
-                Id = status.Id,
-                Name = status.Name
+                Id = status != null ? status.Id : 0,
+                Name = status?.Name
             };
         }
         public static PlatformDto AsDto(this Platform platform)
@@ -194,14 +196,14 @@ namespace GameHeavenAPI
         {
             return new PublisherDto
             {
-                Description = publisher.Description,
-                Name = publisher.Name,
-                CoverPath = publisher.CoverPath,
-                FacebookLink = publisher.FacebookLink,
-                TwitterLink = publisher.TwitterLink,
-                WebsiteLink = publisher.WebsiteLink,
-                User = publisher.User,
-                Id = publisher.Id,
+                Description = publisher?.Description,
+                Name = publisher?.Name,
+                CoverPath = publisher?.CoverPath,
+                FacebookLink = publisher?.FacebookLink,
+                TwitterLink = publisher?.TwitterLink,
+                WebsiteLink = publisher?.WebsiteLink,
+                User = publisher?.User,
+                Id = publisher != null ? publisher.Id : 0,
             };
         }
         public static GameDto AsDto(this Game game)

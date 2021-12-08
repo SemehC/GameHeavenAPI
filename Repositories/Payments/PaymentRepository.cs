@@ -1,5 +1,6 @@
 ﻿using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,12 @@ namespace GameHeavenAPI.Repositories.Payments
     public class PaymentRepository : IPaymentRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public PaymentRepository(ApplicationDbContext applicationDbContext)
+        public PaymentRepository(ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
         {
             _applicationDbContext = applicationDbContext;
+            this.userManager = userManager;
         }
 
         public async Task<Payment> CreatePaymentAsync(Payment payment)
@@ -22,6 +25,12 @@ namespace GameHeavenAPI.Repositories.Payments
             await _applicationDbContext.SaveChangesAsync();
             return paymentDone;
 
+        }
+        public async Task AddGamesToUser(GamesCart cart)
+        {
+            cart.User.Games = (List<Game>)cart.Games;
+            await userManager.UpdateAsync(cart.User);
+            await _applicationDbContext.SaveChangesAsync();
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int id)
@@ -37,6 +46,7 @@ namespace GameHeavenAPI.Repositories.Payments
         public async Task UpdatePayment(Payment payment)
         {
             _applicationDbContext.Payments.Update(payment);
+            await _applicationDbContext.SaveChangesAsync();
             await Task.CompletedTask;
         }
     }

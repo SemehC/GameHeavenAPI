@@ -17,9 +17,9 @@ namespace GameHeavenAPI.Controllers
     {
         private readonly ICartRepository cartRepository;
         private readonly IGameRepository gameRepository;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CartController(ICartRepository cartRepository, IGameRepository gameRepository, Microsoft.AspNetCore.Identity.UserManager<IdentityUser> userManager)
+        public CartController(ICartRepository cartRepository, IGameRepository gameRepository, Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager)
         {
             this.cartRepository = cartRepository;
             this.gameRepository = gameRepository;
@@ -58,7 +58,18 @@ namespace GameHeavenAPI.Controllers
                 };
                 cart = await cartRepository.CreateCartAsync(gamesCart);
             }
-            cart.Games.Add(await gameRepository.GetGameByIdAsync(addToCartDto.GameId));
+            var game = await gameRepository.GetGameByIdAsync(addToCartDto.GameId);
+            if (cart.Games.Contains(game))
+            {
+                var oldCart = cart.AsDto();
+                oldCart.Errors = new List<string>
+                {
+                    "Game is already added to cart"
+                };
+                oldCart.Success = false;
+                return Ok(oldCart);
+            }
+            cart.Games.Add(game);
             await cartRepository.UpdateCartAsync(cart);
             var cartDto = cart.AsDto();
             cartDto.Messages = new List<string>

@@ -1,5 +1,6 @@
 ﻿using GameHeavenAPI.Entities;
 using GameHeavenAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace GameHeavenAPI.Repositories
     public class GameRepository : IGameRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
-
         public GameRepository(ApplicationDbContext appDbContext)
         {
             _applicationDbContext = appDbContext;
@@ -76,6 +76,11 @@ namespace GameHeavenAPI.Repositories
                 await _applicationDbContext.SaveChangesAsync();
             }
 
+        }
+
+        public async Task<IList<Game>> GetUserOwnedGamesAsync(ApplicationUser existingUser)
+        {
+            return await _applicationDbContext.CompleteGames().Where(game => game.Users.Contains(existingUser)).ToListAsync();
         }
     }
 }

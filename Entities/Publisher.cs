@@ -13,7 +13,7 @@ namespace GameHeavenAPI.Entities
         public string Name { get; set;  }
         public string Description { get; set; }
         public DateTimeOffset JoinDate { get; init; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public string CoverPath { get; set; }
         public string WebsiteLink { get; set; }
         public string FacebookLink { get; set; }

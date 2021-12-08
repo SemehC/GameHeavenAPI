@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using GameHeavenAPI.Entities;
 
 namespace GameHeavenAPI.Controllers
 {
@@ -16,13 +17,13 @@ namespace GameHeavenAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         protected readonly ILogger<ClaimSetupController> _logger;
 
         public ClaimSetupController(
             ApplicationDbContext context,
             RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<ClaimSetupController> logger)
         {
             _logger = logger;

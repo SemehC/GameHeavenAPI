@@ -1,8 +1,10 @@
 ﻿using GameHeavenAPI.Configuration;
+using GameHeavenAPI.Dtos;
 using GameHeavenAPI.Dtos.Requests;
 using GameHeavenAPI.Dtos.Responses;
 using GameHeavenAPI.Entities;
 using GameHeavenAPI.Helpers;
+using GameHeavenAPI.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,17 +25,21 @@ namespace GameHeavenAPI.Controllers
     [ApiController]
     public class AuthManagementController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPublishersRepository _publishersRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly RoleManager<IdentityRole> _roleManager;
         protected readonly ILogger<AuthManagementController> _logger;
         private readonly JwtConfig _jwtConfig;
 
-        public AuthManagementController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, RoleManager<IdentityRole> roleManager, ILogger<AuthManagementController> logger)
+        public AuthManagementController(UserManager<ApplicationUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, RoleManager<IdentityRole> roleManager, ILogger<AuthManagementController> logger, IPublishersRepository publishersRepository, IGameRepository gameRepository)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
             _roleManager = roleManager;
             _logger = logger;
+            _publishersRepository = publishersRepository;
+            _gameRepository = gameRepository;
         }
         [HttpPost]
         [Route("Login")]
@@ -80,15 +86,18 @@ namespace GameHeavenAPI.Controllers
                         });
                     }
                     var jwtToken = await GenerateJwtTokenAsync(existingUser);
-                    var usr = new User();
-                    usr.UserProperties = existingUser;
-                    usr.Roles = await _userManager.GetRolesAsync(existingUser);
+                    UserDto userDto = new();
+                    var publisher = await _publishersRepository.GetPublisherByUserAsync(existingUser.Id);
+                    userDto.UserProperties = existingUser;
+                    userDto.Publisher = publisher?.AsDto();
+                    userDto.Roles = await _userManager.GetRolesAsync(existingUser);
+                    userDto.OwnedGames = (await _gameRepository.GetUserOwnedGamesAsync(existingUser)).Select(game => game.AsDto()).ToList();
                     return Ok(new RegistrationResponseDto
                     {
                         Success = true,
                         Token = jwtToken,
                         Messages= new List<string>{ "Welcome " + existingUser.UserName },
-                        User = usr,
+                        User = userDto,
                     });
 
                 }
@@ -121,7 +130,7 @@ namespace GameHeavenAPI.Controllers
                         },
                     });
                 }
-                var newUser = new IdentityUser()
+                var newUser = new ApplicationUser()
                 {
                     Email = userRegistrationDto.Email,
                     UserName = userRegistrationDto.UserName,
@@ -144,6 +153,10 @@ namespace GameHeavenAPI.Controllers
                                 ;
                     bool emailResponse = emailHelper.SendEmail(newUser.Email, confirmationLink, message);
                     //Ensures every user gets atleast one role (User in this case)
+                    if(await _roleManager.RoleExistsAsync(Roles.User.ToString()) == false)
+                    {
+                       await _roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
+                    }
                     await _userManager.AddToRoleAsync(newUser, Roles.User.ToString());
                     if (emailResponse)
                         return Ok(new RegistrationResponseDto
@@ -217,7 +230,7 @@ namespace GameHeavenAPI.Controllers
                             
             });;
         }
-        private async Task<string> GenerateJwtTokenAsync(IdentityUser user)
+        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
@@ -234,7 +247,7 @@ namespace GameHeavenAPI.Controllers
             return jwtToken;
         }
 
-        private async Task<List<Claim>> GetValidClaims(IdentityUser user)
+        private async Task<List<Claim>> GetValidClaims(ApplicationUser user)
         {
             IdentityOptions _options = new IdentityOptions();
             var claims = new List<Claim>

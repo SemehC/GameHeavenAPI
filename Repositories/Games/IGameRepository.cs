@@ -15,5 +15,6 @@ namespace GameHeavenAPI.Repositories
         Task<Game> CreateGameAsync(Game game);
         Task DeleteGameAsync(int id);
         Task UpdateGameAsync(Game game);
+        Task<IList<Game>> GetUserOwnedGamesAsync(ApplicationUser existingUser);
     }
 }

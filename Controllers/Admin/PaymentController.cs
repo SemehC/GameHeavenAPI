@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace GameHeavenAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("admin/[controller]")]
     [ApiController]
+
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentRepository paymentRepository;
@@ -23,6 +24,11 @@ namespace GameHeavenAPI.Controllers
         {
             this.cartRepository = cartRepository;
             this.paymentRepository = paymentRepository;
+        }
+        [HttpGet]
+        public async Task<IEnumerable<PaymentDto>> GetGamesAsync()
+        {
+            return (await paymentRepository.GetPayments()).Select(payment => payment.AsDto()).ToList();
         }
 
         [HttpPost]
@@ -54,7 +60,8 @@ namespace GameHeavenAPI.Controllers
             var payment = await paymentRepository.GetPaymentByIdAsync(paymentId);
             if (payment is not null)
             {
-                var cart = await cartRepository.GetCartByUserIdAsync(payment.Payer.Id);
+                GamesCart cart = await cartRepository.GetCartByUserIdAsync(payment.Payer.Id);
+                await paymentRepository.AddGamesToUser(cart);
                 cart.Games = new List<Game>();
                 payment.Paid = true;
                 await cartRepository.UpdateCartAsync(cart);
