@@ -32,6 +32,7 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDevelopers()
         {
             return Ok((await _repository.GetDevelopersAsync()).Select(Developer => Developer.AsDto()).ToList());
@@ -68,6 +69,7 @@ namespace GameHeavenAPI.Controllers
             return Ok(response);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<DeveloperDto>> GetDeveloperAsync(int id)
         {
             var Developer = await _repository.GetDeveloperAsync(id);

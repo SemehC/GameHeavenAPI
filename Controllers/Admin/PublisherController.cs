@@ -32,6 +32,8 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IActionResult> GetPublishers()
         {
             return Ok((await _repository.GetPublishersAsync()).Select(Publisher => Publisher.AsDto()).ToList());
@@ -67,6 +69,8 @@ namespace GameHeavenAPI.Controllers
             return Ok(response);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<PublisherDto>> GetPublisherAsync(int id)
         {
             var Publisher = await _repository.GetPublisherAsync(id);
