@@ -26,7 +26,7 @@ namespace GameHeavenAPI.Controllers
 {
     [Route("admin/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = nameof(Roles.Admin))]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GameController : ControllerBase
     {
         private readonly IGameRepository _gameRepository;
@@ -87,6 +87,7 @@ namespace GameHeavenAPI.Controllers
         [HttpPost]
         [Consumes("multipart/form-data")]
         [DisableRequestSizeLimit]
+        [Authorize(Roles = nameof(Roles.User))]
         public async Task<ActionResult<GameDto>> CreateGameAsync([FromForm] CreateGameDto createGameDto)
         {
 
@@ -189,6 +190,7 @@ namespace GameHeavenAPI.Controllers
         }
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles = nameof(Roles.User))]
         public async Task<ActionResult> UpdateGameAsync(int id, [FromForm] UpdateGameDto updateGameDto)
         {
             var requestedGame = await _gameRepository.GetGameByIdAsync(id);

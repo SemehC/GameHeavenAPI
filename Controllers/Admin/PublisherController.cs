@@ -19,7 +19,7 @@ namespace GameHeavenAPI.Controllers
 {
     [Route("admin/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = nameof(Roles.Admin))]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class PublisherController : ControllerBase
     {
@@ -40,6 +40,7 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = nameof(Roles.User))]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddPublisher([FromForm] CreatePublisherDto dto)
         {
@@ -70,19 +71,22 @@ namespace GameHeavenAPI.Controllers
         }
         [HttpGet("{id}")]
         [AllowAnonymous]
-
+        [Authorize(Roles = nameof(Roles.User))]
         public async Task<ActionResult<PublisherDto>> GetPublisherAsync(int id)
         {
             var Publisher = await _repository.GetPublisherAsync(id);
             if (Publisher is not null)
             {
-                return Publisher.AsDto();
+                var p = Publisher.AsDto();
+                p.Success = true;
+                return p;
             }
             return NotFound();
 
 
         }
         [HttpGet("GetPublisherByUserId/{id}")]
+
         public async Task<ActionResult<PublisherDto>> GetPublisherByUserIdAsync(string id)
         {
             var Publisher = await _repository.GetPublisherByUserAsync(id);
@@ -95,6 +99,8 @@ namespace GameHeavenAPI.Controllers
 
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = nameof(Roles.User))]
+
         public async Task<ActionResult> DeletePublisherAsync(int id)
         {
             var res = await _repository.GetPublisherAsync(id);
@@ -102,16 +108,16 @@ namespace GameHeavenAPI.Controllers
             {
                 return NotFound();
             }
-            //if (Directory.Exists($"Uploads/Publishers/{res.Name}"))
-            //{
-            //    Directory.Delete($"Uploads/Publishers/{res.Name}", true);
-            //}
+            if (Directory.Exists($"Uploads/Publishers/{res.Name}"))
+            {
+                Directory.Delete($"Uploads/Publishers/{res.Name}", true);
+            }
             await _repository.DeletePublisherAsync(id);
             return NoContent();
         }
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
-
+        [Authorize(Roles = nameof(Roles.User))]
         public async Task<ActionResult> UpdatePublisherAsync(int id, [FromForm] UpdatePublisherDto updatePublisherDto)
         {
             var PublisherToUpdate = await _repository.GetPublisherAsync(id);
@@ -155,10 +161,17 @@ namespace GameHeavenAPI.Controllers
                 PublisherToUpdate.WebsiteLink = updatePublisherDto.WebsiteLink;
                 PublisherToUpdate.FacebookLink = updatePublisherDto.FacebookLink;
                 PublisherToUpdate.TwitterLink = updatePublisherDto.TwitterLink;
-                PublisherToUpdate.User = await _userManager.FindByIdAsync(updatePublisherDto.UserId);
+                PublisherToUpdate.User = updatePublisherDto.UserId != null ? await _userManager.FindByIdAsync(updatePublisherDto.UserId) : PublisherToUpdate.User;
             }
             await _repository.UpdatePublisherAsync(PublisherToUpdate);
-            return NoContent();
+            return Ok(new Response
+            {
+                Success = true,
+                Messages = new List<string>()
+                {
+                    "Publisher successfully",
+                }
+            });
 
         }
     }

@@ -50,7 +50,7 @@ namespace GameHeavenAPI.Controllers
         public IActionResult GetAllRoles()
         {
             var roles = _roleManager.Roles.ToList();
-            return Ok(roles.Select(role=> role.Name));
+            return Ok(roles.Select(role => role.Name));
         }
 
         [HttpPost]
@@ -106,7 +106,7 @@ namespace GameHeavenAPI.Controllers
         }
         [HttpPut]
         [Route("UpdateUser/{id}")]
-        public async Task<IActionResult> UpdateUser(string id, UpdateUserDto updateUserDto)
+        public async Task<IActionResult> UpdateUser(string id, [FromForm] UpdateUserDto updateUserDto)
         {
             var userToBeUpdated = _userManager.Users.Where(user => user.Id.Equals(id)).First();
             if (userToBeUpdated is not null)
@@ -116,9 +116,21 @@ namespace GameHeavenAPI.Controllers
                 userToBeUpdated.FacebookLink = updateUserDto.FacebookLink;
                 userToBeUpdated.InstagramLink = updateUserDto.InstagramLink;
                 userToBeUpdated.TwitterLink = updateUserDto.TwitterLink;
+                if (updateUserDto.Password != null)
+                {
+                    var passwordChanged = await _userManager.ChangePasswordAsync(userToBeUpdated, updateUserDto.OldPassword, updateUserDto.Password);
+                    if(!passwordChanged.Succeeded)
+                    {
+                        return BadRequest(new RegistrationResponseDto
+                        {
+                            Success = false,
+                            Errors = passwordChanged.Errors.Select(x => x.Description).ToList(),
+                        });
+                    }
+                }
                 if (updateUserDto.Cover is not null)
                 {
-                    var path = $"Uploads/Users/{userToBeUpdated.UserName}";
+                    var path = $"Uploads/Users/Cover/{userToBeUpdated.UserName}";
 
                     if (Directory.Exists(path))
                     {
@@ -134,7 +146,7 @@ namespace GameHeavenAPI.Controllers
                 }
                 if (updateUserDto.ProfilePicture is not null)
                 {
-                    var path = $"Uploads/Users/{userToBeUpdated.UserName}";
+                    var path = $"Uploads/Users/ProfilePicture/{userToBeUpdated.UserName}";
 
                     if (Directory.Exists(path))
                     {
@@ -146,8 +158,9 @@ namespace GameHeavenAPI.Controllers
                     var pictureLink = $"https://localhost:5001/GetImage/{encodedPath}";
                     using var stream = new FileStream(Path.Combine(path, updateUserDto.ProfilePicture.FileName), FileMode.Create);
                     await updateUserDto.ProfilePicture.CopyToAsync(stream);
-                    userToBeUpdated.CoverPath = pictureLink;
+                    userToBeUpdated.ProfilePicturePath = pictureLink;
                 }
+                await _userManager.UpdateAsync(userToBeUpdated);
                 UserDto userDto = new();
 
                 var publisher = await _publishersRepository.GetPublisherByUserAsync(userToBeUpdated.Id);
@@ -158,7 +171,7 @@ namespace GameHeavenAPI.Controllers
                 return Ok(new RegistrationResponseDto
                 {
                     Success = true,
-                    Messages = new List<string> { "Profile updated successfully"},
+                    Messages = new List<string> { "Profile updated successfully" },
                     User = userDto,
                 });
             }
@@ -247,7 +260,7 @@ namespace GameHeavenAPI.Controllers
 
         [HttpPost]
         [Route("UpdateUserRoles/{email}")]
-        public async Task<IActionResult> UpdateUserRoles(string email,UserUpdateRolesDto userUpdateRolesDto)
+        public async Task<IActionResult> UpdateUserRoles(string email, UserUpdateRolesDto userUpdateRolesDto)
         {
             var user = await _userManager.FindByEmailAsync(email);
 

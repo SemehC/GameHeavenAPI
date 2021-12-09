@@ -25,12 +25,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<DirectXDto>> GetDirectXsAsync()
         {
             return (await _platoformRepository.GetDirectXsAsync()).Select(DirectX=> DirectX.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<DirectXDto>> GetDirectXAsync(int id)
         {
             var foundDirectX = await _platoformRepository.GetDirectXByIdAsync(id);

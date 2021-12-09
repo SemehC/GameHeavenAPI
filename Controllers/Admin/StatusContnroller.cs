@@ -26,12 +26,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<StatusDto>> GetStatusesAsync()
         {
             return (await _platoformRepository.GetStatusesAsync()).Select(Status=> Status.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<StatusDto>> GetStatusAsync(int id)
         {
             var foundStatus = await _platoformRepository.GetStatusByIdAsync(id);

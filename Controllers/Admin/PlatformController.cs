@@ -25,12 +25,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<PlatformDto>> GetPlatformsAsync()
         {
             return (await _platoformRepository.GetPlatformsAsync()).Select(platform=> platform.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<PlatformDto>> GetPlatformAsync(int id)
         {
             var foundPlatform = await _platoformRepository.GetPlatformByIdAsync(id);

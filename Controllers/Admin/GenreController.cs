@@ -25,12 +25,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<GenreDto>> GetGenresAsync()
         {
             return (await _genreRepository.GetGenresAsync()).Select(genre=> genre.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<GenreDto>> GetGenreAsync(int id)
         {
             var foundGenre = await _genreRepository.GetGenreByIdAsync(id);

@@ -25,12 +25,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<CPUDto>> GetCPUsAsync()
         {
             return (await _CPURepCPUitory.GetCPUsAsync()).Select(CPU => CPU.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<CPUDto>> GetCPUAsync(int id)
         {
             var foundCPU = await _CPURepCPUitory.GetCPUByIdAsync(id);

@@ -26,12 +26,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<OsDto>> GetOsesAsync()
         {
             return (await _OsRepository.GetOsesAsync()).Select(Os => Os.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<OsDto>> GetOsAsync(int id)
         {
             var foundOs = await _OsRepository.GetOsByIdAsync(id);

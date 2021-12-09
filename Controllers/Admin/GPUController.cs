@@ -24,12 +24,16 @@ namespace GameHeavenAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<IEnumerable<GPUDto>> GetGPUsAsync()
         {
             return (await _GPURepGPUitory.GetGPUsAsync()).Select(GPU => GPU.AsDto()).ToList();
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public async Task<ActionResult<GPUDto>> GetGPUAsync(int id)
         {
             var foundGPU = await _GPURepGPUitory.GetGPUByIdAsync(id);
